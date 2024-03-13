@@ -1,80 +1,95 @@
 <script setup>
-import { mdiCog } from '@mdi/js'
-import CardBox from '@/components/CardBox.vue'
-import NumberDynamic from '@/components/NumberDynamic.vue'
-import BaseIcon from '@/components/BaseIcon.vue'
-import BaseLevel from '@/components/BaseLevel.vue'
-import PillTagTrend from '@/components/PillTagTrend.vue'
-import BaseButton from '@/components/BaseButton.vue'
+import { mdiCog } from '@mdi/js';
+import CardBox from '@/components/CardBox.vue';
+import NumberDynamic from '@/components/NumberDynamic.vue';
+import BaseIcon from '@/components/BaseIcon.vue';
+import BaseLevel from '@/components/BaseLevel.vue';
+import PillTagTrend from '@/components/PillTagTrend.vue';
+import BaseButton from '@/components/BaseButton.vue';
 
 defineProps({
   number: {
     type: Number,
-    default: 0
+    default: 0,
   },
   icon: {
-    type: String,
-    default: null
+    type: Image,
+    default: null,
   },
   prefix: {
     type: String,
-    default: null
+    default: null,
   },
   suffix: {
     type: String,
-    default: null
+    default: null,
   },
   label: {
     type: String,
-    default: null
+    default: null,
   },
   street: {
     type: String,
-    default: null
+    default: null,
   },
   distance: {
     type: Number,
-    default: 0
+    default: 0,
   },
   color: {
     type: String,
-    default: null
+    default: null,
   },
   trend: {
     type: String,
-    default: null
+    default: null,
   },
   trendType: {
     type: String,
-    default: null
-  }
-})
+    default: null,
+  },
+});
 </script>
 
 <template>
   <CardBox>
     <BaseLevel v-if="trend" class="mb-3" mobile>
       <PillTagTrend :trend="trend" :trend-type="trendType" small />
-      <BaseButton :icon="mdiCog" icon-w="w-4" icon-h="h-4" color="lightDark" small />
+      <BaseButton
+        :icon="mdiCog"
+        icon-w="w-4"
+        icon-h="h-4"
+        color="lightDark"
+        small
+      />
     </BaseLevel>
     <BaseLevel mobile>
-      <div>
+      <div class="max-w-full">
         <h1 class="text-2xl leading-tight font-semibold">
           {{ label }}
         </h1>
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-row gap-2 overflow-hidden">
           <h1 class="text-lg leading-tight text-gray-500 dark:text-slate-400">
             {{ distance }} km
 
             <!-- <NumberDynamic :value="number" :prefix="prefix" :suffix="suffix" /> -->
           </h1>
           <p>•</p>
-          <h1 class="text-lg leading-tight text-gray-500 dark:text-slate-400">
+          <h1
+            class="text-ellipsis overflow-hidden text-lg leading-tight text-gray-500 dark:text-slate-400 truncate"
+          >
             {{ street }}
           </h1>
         </div>
       </div>
-      <BaseIcon v-if="icon" :path="icon" size="48" w="" h="h-16" :class="color" />
+      <BaseIcon
+        v-if="icon"
+        :path="icon"
+        size="48"
+        w=""
+        h="h-16"
+        :class="color"
+      />
     </BaseLevel>
   </CardBox>
 </template>

@@ -1,68 +1,98 @@
 <script setup>
-import { computed, ref, onMounted } from 'vue'
-import { useMainStore } from '@/stores/main'
+import { computed, ref, onMounted } from 'vue';
+import { useMainStore } from '@/stores/main';
 import {
   mdiAccountMultiple,
   mdiCartOutline,
   mdiChartTimelineVariant,
   mdiReload,
   mdiChartPie,
-  mdiListBox
-} from '@mdi/js'
-import * as chartConfig from '@/components/Charts/chart.config.js'
-import LineChart from '@/components/Charts/LineChart.vue'
-import SectionMain from '@/components/SectionMain.vue'
-import CardBoxWidget from '@/components/CardBoxWidget.vue'
-import CardBox from '@/components/CardBox.vue'
-import TableSampleClients from '@/components/TableSampleClients.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
-import BaseButton from '@/components/BaseButton.vue'
-import CardBoxTransaction from '@/components/CardBoxTransaction.vue'
-import CardBoxClient from '@/components/CardBoxClient.vue'
-import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue'
-import SectionBannerStarOnGitHub from '@/components/SectionBannerStarOnGitHub.vue'
-import GoogleMaps from '@/components/Maps/Maps.vue'
-// import CustomDrawer from '@/components/Modal/CustomDrawer.vue'
-// import { toggleDrawer } from '@/helpers/common'
+  mdiListBox,
+} from '@mdi/js';
+import Charge from '@/images/charge.vue';
+import * as chartConfig from '@/components/Charts/chart.config.js';
+import LineChart from '@/components/Charts/LineChart.vue';
+import SectionMain from '@/components/SectionMain.vue';
+import CardBoxWidget from '@/components/CardBoxWidget.vue';
+import CardBox from '@/components/CardBox.vue';
+import TableSampleClients from '@/components/TableSampleClients.vue';
+import NotificationBar from '@/components/NotificationBar.vue';
+import BaseButton from '@/components/BaseButton.vue';
+import CardBoxTransaction from '@/components/CardBoxTransaction.vue';
+import CardBoxClient from '@/components/CardBoxClient.vue';
+import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue';
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue';
+import SectionBannerStarOnGitHub from '@/components/SectionBannerStarOnGitHub.vue';
+import GoogleMaps from '@/components/Maps/Maps.vue';
+import CustomDrawer from '@/components/Drawer/CustomDrawer.vue';
+import { toggleDrawer } from '@/helpers/common';
 
-const mapView = ref(true) // Set default view to map view
-const chartData = ref(null)
-const listItems = ref([]) // Array to hold list items
+const mapView = ref(true); // Set default view to map view
+const chartData = ref(null);
+const listItems = ref([]); // Array to hold list items
 
 const fillChartData = () => {
-  chartData.value = chartConfig.sampleChartData()
-}
+  chartData.value = chartConfig.sampleChartData();
+};
 
 onMounted(() => {
-  fillChartData()
-  addSampleItems()
-})
+  fillChartData();
+  addSampleItems();
+});
 
-const mainStore = useMainStore()
+const mainStore = useMainStore();
 
-const clientBarItems = computed(() => mainStore.clients.slice(0, 4))
+const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 
-const transactionBarItems = computed(() => mainStore.history)
+const transactionBarItems = computed(() => mainStore.history);
 
 const toggleView = () => {
-  mapView.value = !mapView.value // Toggle view between map and list
-}
+  mapView.value = !mapView.value; // Toggle view between map and list
+};
 
 const addSampleItems = () => {
   // Add sample items to the list
   listItems.value.push(
-    { id: 1, name: 'NAFA Campus 1', street: 'ljfnvjnv', distance: 0.55 },
+    {
+      id: 1,
+      name: 'NAFA Campus 1',
+      street: '21 Tampines Avenue 1, Singapore 599242',
+      distance: 0.55,
+    },
     { id: 2, name: 'Odeon Towers', street: 'ljfnvjnv', distance: 0.44 },
     { id: 3, name: 'Fortune Centre', street: 'ljfnvjnv', distance: 0.35 }
-  )
-}
+  );
+};
+
+const cardContent = ref([
+  { id: 1, name: 'NAFA Campus 1', street: 'ljfnvjnv', distance: 0.55 },
+]);
+
+const logValues = (item) => {
+  console.log('Clicked Item:', item.name);
+  cardContent.value = [];
+  cardContent.value.push({
+    id: item.id,
+    name: item.name,
+    street: item.street,
+    distance: 0.55,
+  });
+  console.log(cardContent);
+  toggleDrawer('1');
+};
+
+const onDrawerClose = () => {
+  toggleDrawer(this.drawerId);
+};
 </script>
 
 <template>
   <LayoutAuthenticated>
     <SectionMain>
-      <SectionTitleLineWithButton :icon="mdiChartTimelineVariant" title="Charging Locations">
+      <SectionTitleLineWithButton
+        :icon="mdiChartTimelineVariant"
+        title="Charging Locations"
+      >
         <BaseButton
           @click="toggleView"
           target="_blank"
@@ -103,6 +133,7 @@ const addSampleItems = () => {
               :distance="item.distance"
               :label="item.name"
               :street="item.street"
+              @click="logValues(item)"
             />
           </div>
         </div>
@@ -162,10 +193,25 @@ const addSampleItems = () => {
         </div>
       </div>
 
+      <CustomDrawer
+        :drawer-id="1"
+        :page-name="hello"
+        :drawer-title="cardContent[0].name"
+        :drawer-subtitle="cardContent[0].street"
+        button-false="Not now"
+        button-true="Scan QR"
+      >
+        {{ hello }}
+      </CustomDrawer>
+
       <SectionBannerStarOnGitHub class="mt-6 mb-6" />
 
       <SectionTitleLineWithButton :icon="mdiChartPie" title="Trends overview">
-        <BaseButton :icon="mdiReload" color="whiteDark" @click="fillChartData" />
+        <BaseButton
+          :icon="mdiReload"
+          color="whiteDark"
+          @click="fillChartData"
+        />
       </SectionTitleLineWithButton>
 
       <CardBox class="mb-6">

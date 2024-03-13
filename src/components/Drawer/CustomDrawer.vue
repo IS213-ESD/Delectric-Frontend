@@ -3,8 +3,14 @@
     <input :id="drawerId" type="checkbox" class="drawer-toggle" />
 
     <div class="drawer-side">
-      <label :for="drawerId" aria-label="close sidebar" class="drawer-overlay"></label>
-      <div class="bottomDrawer bg-zinc-900 menu p-6 w-full text-base-content">
+      <label
+        :for="drawerId"
+        aria-label="close sidebar"
+        class="drawer-overlay"
+      ></label>
+      <div
+        class="bottomDrawer bg-zinc-900 menu p-6 w-full text-base-content h-1/2"
+      >
         <form method="dialog"></form>
         <div class="mb-12 mt-6">
           <div>
@@ -13,13 +19,23 @@
           </div>
         </div>
         <form method="dialog" class="flex flex-col justify-around gap-2">
-          <button width="full" roundness="round" color="green" @click="changeTab">
+          <CustomButton
+            width="full"
+            roundness="round"
+            color="green"
+            @click="onDrawerClose"
+          >
             {{ buttonTrue }}
-          </button>
+          </CustomButton>
 
-          <button width="full" roundness="round" color="ghost" @click="onDrawerClose">
+          <CustomButton
+            width="full"
+            roundness="round"
+            color="ghost"
+            @click="onDrawerClose"
+          >
             {{ buttonFalse }}
-          </button>
+          </CustomButton>
         </form>
       </div>
     </div>
@@ -27,53 +43,53 @@
 </template>
 
 <script>
-// import CustomButton from '@/components/Button/CustomButton.vue'
-import { toggleDrawer } from '@/helpers/common'
+import CustomButton from '@/components/Button/CustomButton.vue';
+import { toggleDrawer } from '@/helpers/common';
 
 export default {
   name: 'CustomDrawer',
   components: {
-    // CustomButton
+    CustomButton,
   },
   props: {
     drawerId: {
       type: String,
-      default: ''
+      default: '',
     },
     pageName: {
       type: String,
-      default: ''
+      default: '',
     },
     contentHere: {
       type: String,
-      default: ''
+      default: '',
     },
     drawerTitle: {
       type: String,
-      default: ''
+      default: '',
     },
     drawerSubtitle: {
       type: String,
-      default: ''
+      default: '',
     },
     buttonFalse: {
       type: String,
-      default: ''
+      default: '',
     },
     buttonTrue: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   methods: {
     onDrawerClose() {
-      toggleDrawer(this.drawerId)
+      toggleDrawer(this.drawerId);
     },
     changeTab() {
-      this.$router.push(this.pageName)
-    }
-  }
-}
+      this.$router.push(this.pageName);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -83,5 +99,14 @@ export default {
 
 .drawer_bottom .drawer-toggle ~ .drawer-side > *:not(.drawer-overlay) {
   transform: translateY(100%);
+}
+
+.bottomDrawer {
+  background: black;
+  color: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-radius: 20px 20px 0 0;
 }
 </style>
