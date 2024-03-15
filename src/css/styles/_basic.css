@@ -1,5 +1,5 @@
-@layer components {
-  .style-basic:not(.dark) {
+/* @layer components {
+  .style-basic:(.dark) {
     .aside {
       @apply bg-gray-800;
     }
@@ -28,4 +28,4 @@
       @apply from-gray-700 via-gray-900 to-gray-700;
     }
   }
-}
+} */

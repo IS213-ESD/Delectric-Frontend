@@ -6,6 +6,9 @@ import BaseIcon from '@/components/BaseIcon.vue';
 import BaseLevel from '@/components/BaseLevel.vue';
 import PillTagTrend from '@/components/PillTagTrend.vue';
 import BaseButton from '@/components/BaseButton.vue';
+import Charge from '@/assets/Charge.png';
+
+import { ref } from 'vue';
 
 defineProps({
   number: {
@@ -49,19 +52,22 @@ defineProps({
     default: null,
   },
 });
+
+// const imagePath = ref('@/assets/charge.png');
 </script>
 
 <template>
-  <CardBox>
+  <CardBox class="cursor-pointer">
     <BaseLevel v-if="trend" class="mb-3" mobile>
       <PillTagTrend :trend="trend" :trend-type="trendType" small />
-      <BaseButton
+      <!-- <BaseButton
         :icon="mdiCog"
         icon-w="w-4"
         icon-h="h-4"
         color="lightDark"
         small
-      />
+      /> -->
+      <img :src="Charge" class="w-8" />
     </BaseLevel>
     <BaseLevel mobile>
       <div class="max-w-full">
@@ -69,27 +75,27 @@ defineProps({
           {{ label }}
         </h1>
         <div class="flex flex-row gap-2 overflow-hidden">
-          <h1 class="text-lg leading-tight text-gray-500 dark:text-slate-400">
+          <h1 class="w-2/5 text-lg leading-tight text-slate-400">
             {{ distance }} km
 
             <!-- <NumberDynamic :value="number" :prefix="prefix" :suffix="suffix" /> -->
           </h1>
           <p>•</p>
           <h1
-            class="text-ellipsis overflow-hidden text-lg leading-tight text-gray-500 dark:text-slate-400 truncate"
+            class="text-ellipsis overflow-hidden text-lg leading-tight text-slate-400 truncate"
           >
             {{ street }}
           </h1>
         </div>
       </div>
-      <BaseIcon
+      <!-- <BaseIcon
         v-if="icon"
         :path="icon"
         size="48"
         w=""
         h="h-16"
         :class="color"
-      />
+      /> -->
     </BaseLevel>
   </CardBox>
 </template>

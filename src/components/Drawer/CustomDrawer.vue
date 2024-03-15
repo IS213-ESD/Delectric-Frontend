@@ -14,8 +14,8 @@
         <form method="dialog"></form>
         <div class="mb-12 mt-6">
           <div>
-            <h3 class="font-bold text-lg text-white">{{ drawerTitle }}</h3>
-            <p class="text-md text-white">{{ drawerSubtitle }}</p>
+            <h3 class="font-bold text-lg text-black">{{ drawerTitle }}</h3>
+            <p class="text-md text-black">{{ drawerSubtitle }}</p>
           </div>
         </div>
         <form method="dialog" class="flex flex-col justify-around gap-2">
@@ -102,8 +102,8 @@ export default {
 }
 
 .bottomDrawer {
-  background: black;
-  color: white;
+  background: white;
+  color: black;
   position: absolute;
   bottom: 0;
   left: 0;
