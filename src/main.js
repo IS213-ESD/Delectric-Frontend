@@ -25,7 +25,7 @@ createApp(App)
   .use(VueDatePicker)
   .use(VueGoogleMaps, {
     load: {
-      key: 'AIzaSyDK3bNzaTJQur2o-1H1a709cdQS4gwzQy0', // Add your Google Maps API key here
+      key: '', // Add your Google Maps API key here
       libraries: 'places', // Add any additional libraries if needed
     },
   })
