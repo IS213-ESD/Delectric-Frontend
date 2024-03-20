@@ -19,7 +19,7 @@ defineProps({
 </script>
 
 <template>
-  <div role="alert" class="alert shadow-lg overflow-hidden p-0">
+  <div role="alert" class="shadow-lg overflow-hidden p-0">
     <div class="absolute">
       <!-- <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -34,11 +34,12 @@ defineProps({
           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         ></path>
       </svg> -->
-      <div>
-        <h1 class="font-bold text-white text-2xl">{{ message }}</h1>
+      <div class="absolute ml-8">
+        <h1 class="mt-4 font-bold text-white text-2xl">{{ message }}</h1>
+        <button class="btn btn-sm">{{ btnmessage }}</button>
+
         <div class="text-xs mt-4 text-slate-300">{{ submessage }}</div>
       </div>
-      <button class="btn btn-sm">{{ btnmessage }}</button>
     </div>
     <img :src="car" class="w-full rounded-xl object-cover h-32" />
   </div>

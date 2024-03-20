@@ -9,7 +9,7 @@
         class="drawer-overlay"
       ></label>
       <div
-        class="bottomDrawer bg-zinc-900 menu p-6 w-full text-base-content h-1/2"
+        class="bottomDrawer bg-zinc-900 menu p-6 w-full text-base-content h-2/5"
       >
         <form method="dialog"></form>
         <div class="mb-12 mt-6">
@@ -22,20 +22,21 @@
           <CustomButton
             width="full"
             roundness="round"
-            color="green"
-            @click="onDrawerClose"
+            :color="disabled ? 'green' : 'disabled'"
+            @click="bookSlot"
+            :disabled="!disabled"
           >
             {{ buttonTrue }}
           </CustomButton>
 
-          <CustomButton
+          <!-- <CustomButton
             width="full"
             roundness="round"
             color="ghost"
             @click="onDrawerClose"
           >
             {{ buttonFalse }}
-          </CustomButton>
+          </CustomButton> -->
         </form>
       </div>
     </div>
@@ -50,6 +51,11 @@ export default {
   name: 'CustomDrawer',
   components: {
     CustomButton,
+  },
+  data() {
+    return {
+      isEnabled: this.disabled,
+    };
   },
   props: {
     drawerId: {
@@ -80,13 +86,22 @@ export default {
       type: String,
       default: '',
     },
+    disabled: {
+      type: String,
+      default: '',
+    },
   },
+
   methods: {
     onDrawerClose() {
       toggleDrawer(this.drawerId);
     },
+
     changeTab() {
       this.$router.push(this.pageName);
+    },
+    bookSlot() {
+      this.$emit('book-slot');
     },
   },
 };

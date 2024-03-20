@@ -5,19 +5,27 @@ import App from './App.vue';
 import router from './router';
 import { useMainStore } from '@/stores/main.js';
 import VueGoogleMaps from '@fawmi/vue-google-maps';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 import './css/main.css';
 
 // Init Pinia
 const pinia = createPinia();
 
+// Get API from
+
+// const mapsApi = import.meta.env.VITE_API_KEY;
+// console.log(mapsApi);
+
 // Create Vue app
 createApp(App)
   .use(router)
   .use(pinia)
+  .use(VueDatePicker)
   .use(VueGoogleMaps, {
     load: {
-      key: '', // Add your Google Maps API key here
+      key: 'AIzaSyDK3bNzaTJQur2o-1H1a709cdQS4gwzQy0', // Add your Google Maps API key here
       libraries: 'places', // Add any additional libraries if needed
     },
   })
