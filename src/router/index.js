@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Style from '@/views/StyleView.vue';
 import HomeView from '@/views/HomeView.vue';
+import BookingsView from '@/views/Bookings.vue';
 
 const routes = [
   {
@@ -20,6 +21,14 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: HomeView,
+  },
+  {
+    meta: {
+      title: 'Booking',
+    },
+    path: '/booking',
+    name: 'booking',
+    component: BookingsView,
   },
   {
     meta: {
