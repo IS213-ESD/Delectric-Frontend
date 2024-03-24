@@ -99,7 +99,7 @@ import {
   mdiListBox,
 } from '@mdi/js';
 // import Charge from '@/images/charge.vue';
-import CurrentAlert from '@/components/currentAlert.vue';
+import CurrentAlert from '@/components/CurrentAlert.vue';
 import * as chartConfig from '@/components/Charts/chart.config.js';
 import LineChart from '@/components/Charts/LineChart.vue';
 import SectionMain from '@/components/SectionMain.vue';

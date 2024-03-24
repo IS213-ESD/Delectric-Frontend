@@ -1,6 +1,6 @@
 <script setup>
-import { computed, ref, onMounted } from 'vue';
 import car from '@/assets/car.png';
+import { useRouter } from 'vue-router';
 
 defineProps({
   message: {
@@ -16,6 +16,12 @@ defineProps({
     default: null,
   },
 });
+
+const router = useRouter();
+
+const routeView = () => {
+  router.push('/booking');
+};
 </script>
 
 <template>
@@ -36,7 +42,7 @@ defineProps({
       </svg> -->
       <div class="absolute ml-8">
         <h1 class="mt-4 font-bold text-white text-2xl">{{ message }}</h1>
-        <button class="btn btn-sm">{{ btnmessage }}</button>
+        <button @click="routeView" class="btn btn-sm">{{ btnmessage }}</button>
 
         <div class="text-xs mt-4 text-slate-300">{{ submessage }}</div>
       </div>

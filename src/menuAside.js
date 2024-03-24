@@ -17,13 +17,13 @@ export default [
   {
     to: '/dashboard',
     icon: mdiMonitor,
-    label: 'Dashboard',
+    label: 'Home',
   },
-  // {
-  //   to: '/tables',
-  //   label: 'Tables',
-  //   icon: mdiTable
-  // },
+  {
+    to: '/booking',
+    label: 'Bookings',
+    icon: mdiTable,
+  },
   // {
   //   to: '/forms',
   //   label: 'Forms',

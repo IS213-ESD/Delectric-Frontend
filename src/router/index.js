@@ -8,7 +8,7 @@ const routes = [
     meta: {
       title: 'Select style',
     },
-    path: '/',
+    path: '/style',
     name: 'style',
     component: Style,
   },
