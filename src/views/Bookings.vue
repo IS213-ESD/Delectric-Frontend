@@ -1,8 +1,4 @@
 <script setup>
-<<<<<<< HEAD
-import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue';
-import BaseButton from '@/components/BaseButton.vue';
-=======
     import { reactive } from 'vue'
     import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
     import { useMainStore } from '@/stores/main'
@@ -11,7 +7,6 @@ import BaseButton from '@/components/BaseButton.vue';
     //     name: mainStore.userName,
     //     email: mainStore.userEmail
     // })
->>>>>>> origin/charging-stations
 </script>
 
 <template>
