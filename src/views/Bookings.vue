@@ -1,5 +1,12 @@
 <script setup>
+    import { reactive } from 'vue'
     import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
+    import { useMainStore } from '@/stores/main'
+    const mainStore = useMainStore()
+    // const profileForm = reactive({
+    //     name: mainStore.userName,
+    //     email: mainStore.userEmail
+    // })
 </script>
 
 <template>
