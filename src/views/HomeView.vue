@@ -129,6 +129,8 @@ import { toggleDrawer } from '@/helpers/common';
 import FilterDrawer from '@/components/Drawer/FilterDrawer.vue';
 import { useRouter } from 'vue-router';
 
+const mainStore = useMainStore();
+
 const mapView = ref(true); // Set default view to map view
 const chartData = ref(null);
 const listItems = ref([]); // Array to hold list items
@@ -146,8 +148,59 @@ const receiveMarkerAdresss = (data) => {
   receiveMarker.value = data;
 };
 
-const receiveIsFiltered = (data) => {
-  isFiltered.value = data;
+const receiveIsFiltered = async (data) => {
+  await mainStore.fetchNearbyStations(
+    1.3521,
+    103.8198,
+    1.5,
+    "08:00:00",
+    27,
+    "2024-03-08"
+    ).then(()=>{
+      let data = mainStore.chargerslist;
+      listItems.value = []
+      if (data && Array.isArray(data)) {
+        for (const item of data) {
+          listItems.value.push(
+          {
+            id: item.charger_id,
+            name: item.charger_name,
+            street: item.charger_location,
+            distance: item.distance,
+          },
+        );
+          console.log(item);
+        }
+      } else {
+        console.error("chargerslist is empty or not an array");
+      }
+    })
+
+    isFiltered.value = data;
+
+};
+
+const getAllStations = async () => {
+  try {
+    await mainStore.fetchAllStations();
+    const data = mainStore.chargerslist;
+    console.log(data);
+    listItems.value = [];
+    if (data && Array.isArray(data)) {
+      for (const item of data) {
+        listItems.value.push({
+          id: item.charger_id,
+          name: item.charger_name,
+          street: item.charger_location,
+        });
+        console.log(item);
+      }
+    } else {
+      console.error("chargerslist is empty or not an array");
+    }
+  } catch (error) {
+    console.error("Error fetching stations:", error);
+  }
 };
 
 // Computed property to determine button text
@@ -178,12 +231,15 @@ const handleBookSlot = (data) => {
   }
 };
 
+
+
 onMounted(() => {
   fillChartData();
-  addSampleItems();
+  // addSampleItems();
+  getAllStations();
+  console.log('loaded')
 });
 
-const mainStore = useMainStore();
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 
