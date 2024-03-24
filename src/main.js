@@ -4,6 +4,8 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 import { useMainStore } from '@/stores/main.js';
+import { useChargersStore } from '@/stores/chargers.js';
+import { useBookingStore } from '@/stores/booking.js';
 import VueGoogleMaps from '@fawmi/vue-google-maps';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
@@ -33,6 +35,8 @@ createApp(App)
 
 // Init main store
 const mainStore = useMainStore(pinia);
+useChargersStore(pinia);
+useBookingStore(pinia);
 
 // Fetch sample data
 mainStore.fetchSampleClients();

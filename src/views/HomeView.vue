@@ -99,7 +99,7 @@
 
 <script setup>
 import { computed, ref, onMounted } from 'vue';
-import { useMainStore } from '@/stores/main';
+import { useChargersStore } from '@/stores/chargers';
 import {
   mdiAccountMultiple,
   mdiCartOutline,
@@ -129,7 +129,7 @@ import { toggleDrawer } from '@/helpers/common';
 import FilterDrawer from '@/components/Drawer/FilterDrawer.vue';
 import { useRouter } from 'vue-router';
 
-const mainStore = useMainStore();
+const chargersStore = useChargersStore();
 
 const mapView = ref(true); // Set default view to map view
 const chartData = ref(null);
@@ -149,7 +149,7 @@ const receiveMarkerAdresss = (data) => {
 };
 
 const receiveIsFiltered = async (data) => {
-  await mainStore.fetchNearbyStations(
+  await chargersStore.fetchNearbyStations(
     1.3521,
     103.8198,
     1.5,
@@ -157,7 +157,7 @@ const receiveIsFiltered = async (data) => {
     27,
     "2024-03-08"
     ).then(()=>{
-      let data = mainStore.chargerslist;
+      let data = chargersStore.chargerslist;
       listItems.value = []
       if (data && Array.isArray(data)) {
         for (const item of data) {
@@ -182,8 +182,8 @@ const receiveIsFiltered = async (data) => {
 
 const getAllStations = async () => {
   try {
-    await mainStore.fetchAllStations();
-    const data = mainStore.chargerslist;
+    await chargersStore.fetchAllStations();
+    const data = chargersStore.chargerslist;
     console.log(data);
     listItems.value = [];
     if (data && Array.isArray(data)) {
