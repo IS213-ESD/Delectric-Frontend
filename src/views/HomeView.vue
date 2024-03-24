@@ -71,7 +71,7 @@
         </div>
       </div>
 
-      <CustomDrawer
+      <!-- <CustomDrawer
         :drawer-id="1"
         :page-name="hello"
         :drawer-title="cardContent[0].name"
@@ -79,6 +79,16 @@
         :button-true="
           isFiltered ? 'Book Slot' : 'Please filter before selecting'
         "
+        @book-slot="handleBookSlot"
+        :disabled="isFiltered"
+      >
+      </CustomDrawer> -->
+      <CustomDrawer
+        :drawer-id="1"
+        :page-name="hello"
+        :drawer-title="cardContent[0].name"
+        :drawer-subtitle="cardContent[0].street"
+        :button-true="buttonText"
         @book-slot="handleBookSlot"
         :disabled="isFiltered"
       >
@@ -117,6 +127,7 @@ import GoogleMaps from '@/components/Maps/Maps.vue';
 import CustomDrawer from '@/components/Drawer/CustomDrawer.vue';
 import { toggleDrawer } from '@/helpers/common';
 import FilterDrawer from '@/components/Drawer/FilterDrawer.vue';
+import { useRouter } from 'vue-router';
 
 const mapView = ref(true); // Set default view to map view
 const chartData = ref(null);
@@ -124,6 +135,8 @@ const listItems = ref([]); // Array to hold list items
 const receiveMarker = ref('');
 const isFiltered = ref(false);
 const showClearFilterButton = ref(false);
+const router = useRouter();
+const isLoading = ref(false);
 
 const fillChartData = () => {
   chartData.value = chartConfig.sampleChartData();
@@ -137,10 +150,31 @@ const receiveIsFiltered = (data) => {
   isFiltered.value = data;
 };
 
+// Computed property to determine button text
+const buttonText = computed(() => {
+  return isFiltered.value
+    ? isLoading.value
+      ? 'Loading...'
+      : 'Book Slot'
+    : 'Please filter before selecting';
+});
+
 const handleBookSlot = (data) => {
   console.log(isFiltered.value);
   if (isFiltered.value === false) {
     toggleView();
+  }
+  if (isFiltered.value) {
+    isLoading.value = true; // Set loading state to true
+    // Perform your async operation (e.g., API call)
+    // Once the operation is complete, set isLoading back to false
+    // For demonstration purpose, I'm using a setTimeout to simulate an async operation
+    setTimeout(() => {
+      // Simulating completion of async operation
+      isLoading.value = false; // Set loading state to false
+      // Perform any other actions here if needed
+      router.push('/booking');
+    }, 2000); // Adjust the time based on your actual async operation
   }
 };
 
