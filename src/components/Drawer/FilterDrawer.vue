@@ -72,6 +72,7 @@
 <script>
 import { ref } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
+import { useMainStore } from '@/stores/main';
 
 export default {
   components: {
@@ -84,6 +85,11 @@ export default {
       date: new Date(),
       startTime: { hours: new Date().getHours() + 1, minutes: 0 },
     };
+  },
+  computed: {
+    mainStore() {
+      return useMainStore();
+    },
   },
   methods: {
     handleDate(modelData) {
@@ -99,8 +105,12 @@ export default {
       console.log(this.showClearFilterButton);
       const valuee = this.showClearFilterButton;
       this.$emit('is-filtered', valuee);
+      this.sendBookingFilter(this.date, this.hoursBooked);
 
       // Perform filtering logic or other actions with the selected value
+    },
+    sendBookingFilter(date, hoursBooked) {
+      this.mainStore.receiveBookingFilter(date, hoursBooked);
     },
     clearFilter() {
       this.showClearFilterButton = false;

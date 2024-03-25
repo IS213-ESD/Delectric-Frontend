@@ -16,7 +16,7 @@ defineProps({
     default: 0,
   },
   icon: {
-    type: Image,
+    type: String,
     default: null,
   },
   prefix: {

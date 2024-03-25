@@ -26,6 +26,9 @@
 </template>
 
 <script>
+import { useMainStore } from '@/stores/main';
+import { computed, ref, onMounted, watch } from 'vue';
+
 export default {
   name: 'GoogleMaps',
   props: {
@@ -101,15 +104,27 @@ export default {
           lng: position.coords.longitude,
         };
 
+        this.updateStoreLocation(this.center.lat, this.center.lng);
+
         // Add multiple markers around the current location
-        this.addMarkersAroundCurrentLocation();
+        this.getAllStations();
+        // this.addMarkersAroundCurrentLocation();
       },
       (error) => {
         console.error('Error getting current location:', error);
       }
     );
   },
+  computed: {
+    mainStore() {
+      return useMainStore();
+    },
+  },
   methods: {
+    updateStoreLocation(latitude, longitude) {
+      // const mainStore = useMainStore();
+      this.mainStore.updateStoreLocation(latitude, longitude);
+    },
     async reverseGeocode(lat, lng) {
       try {
         const response = await fetch(
@@ -136,12 +151,21 @@ export default {
       console.log(address);
       this.$emit('marker-address', address);
     },
-    addMarkersAroundCurrentLocation() {
+    async getAllStations() {
+      try {
+        await this.mainStore.fetchAllStations();
+        const data = this.mainStore.chargerslist;
+        console.log('Successfully retrieve all stations', data);
+        this.addMarkersAroundCurrentLocation(data);
+      } catch (error) {
+        console.error('Error fetching stations:', error);
+      }
+    },
+    addMarkersAroundCurrentLocation(data) {
       // Generate random positions around the current location for demonstration
-      for (let i = 0; i < 5; i++) {
-        const randomOffset = Math.random() / 100; // Small random offset
-        const lat = this.center.lat + randomOffset;
-        const lng = this.center.lng + randomOffset;
+      for (let i = 0; i < data.length; i++) {
+        const lat = data[i].latitude;
+        const lng = data[i].longitude;
         const marker = {
           position: { lat, lng },
           tooltip: '',

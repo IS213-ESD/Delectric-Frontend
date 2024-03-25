@@ -62,10 +62,10 @@ export default {
       type: String,
       default: '',
     },
-    pageName: {
-      type: String,
-      default: '',
-    },
+    // pageName: {
+    //   type: String,
+    //   default: '',
+    // },
     contentHere: {
       type: String,
       default: '',
@@ -87,7 +87,7 @@ export default {
       default: '',
     },
     disabled: {
-      type: String,
+      type: Boolean,
       default: '',
     },
   },
@@ -97,9 +97,9 @@ export default {
       toggleDrawer(this.drawerId);
     },
 
-    changeTab() {
-      this.$router.push(this.pageName);
-    },
+    // changeTab() {
+    //   this.$router.push(this.pageName);
+    // },
     bookSlot() {
       this.$emit('book-slot');
     },

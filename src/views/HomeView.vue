@@ -20,13 +20,12 @@
             >Filter</label
           >
         </div>
-        {{ receiveMarker }}
 
         <BaseButton
           @click="toggleView"
           target="_blank"
           :icon="mdiListBox"
-          :label="mapView ? 'List View' : 'Map View'"
+          :label="mapView ? 'Map View' : 'List View'"
           color="white"
           rounded-full
           small
@@ -85,7 +84,6 @@
       </CustomDrawer> -->
       <CustomDrawer
         :drawer-id="1"
-        :page-name="hello"
         :drawer-title="cardContent[0].name"
         :drawer-subtitle="cardContent[0].street"
         :button-true="buttonText"
@@ -98,7 +96,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { useMainStore } from '@/stores/main';
 import {
   mdiAccountMultiple,
@@ -131,7 +129,7 @@ import { useRouter } from 'vue-router';
 
 const mainStore = useMainStore();
 
-const mapView = ref(true); // Set default view to map view
+const mapView = ref(false); // Set default view to map view
 const chartData = ref(null);
 const listItems = ref([]); // Array to hold list items
 const receiveMarker = ref('');
@@ -148,43 +146,49 @@ const receiveMarkerAdresss = (data) => {
   receiveMarker.value = data;
 };
 
+// Function to update store location
+const updateStoreLocation = async (latitude, longitude) => {
+  await mainStore.updateStoreLocation(latitude, longitude);
+  // console.log(mainStore.storeLocation.value); // Access the value property of storeLocation
+};
+
 const receiveIsFiltered = async (data) => {
-  await mainStore.fetchNearbyStations(
-    1.3521,
-    103.8198,
-    1.5,
-    "08:00:00",
-    27,
-    "2024-03-08"
-    ).then(()=>{
+  console.log('receiveisfiltered', mainStore.storeLocation);
+  await mainStore
+    .fetchNearbyStations(
+      mainStore.storeLocation.latitude,
+      mainStore.storeLocation.longitude,
+      mainStore.storeLocation.radius,
+      mainStore.storeLocation.currentTimeString,
+      mainStore.storeLocation.hrs,
+      mainStore.storeLocation.date
+    )
+    .then(() => {
       let data = mainStore.chargerslist;
-      listItems.value = []
+      listItems.value = [];
       if (data && Array.isArray(data)) {
         for (const item of data) {
-          listItems.value.push(
-          {
+          listItems.value.push({
             id: item.charger_id,
             name: item.charger_name,
             street: item.charger_location,
             distance: item.distance,
-          },
-        );
-          console.log(item);
+          });
         }
+        console.log('test', mainStore.storeLocation);
       } else {
-        console.error("chargerslist is empty or not an array");
+        console.error('chargerslist is empty or not an array');
       }
-    })
+    });
 
-    isFiltered.value = data;
-
+  isFiltered.value = data;
 };
 
 const getAllStations = async () => {
   try {
     await mainStore.fetchAllStations();
     const data = mainStore.chargerslist;
-    console.log(data);
+    console.log('data', data);
     listItems.value = [];
     if (data && Array.isArray(data)) {
       for (const item of data) {
@@ -193,13 +197,12 @@ const getAllStations = async () => {
           name: item.charger_name,
           street: item.charger_location,
         });
-        console.log(item);
       }
     } else {
-      console.error("chargerslist is empty or not an array");
+      console.error('chargerslist is empty or not an array');
     }
   } catch (error) {
-    console.error("Error fetching stations:", error);
+    console.error('Error fetching stations:', error);
   }
 };
 
@@ -231,19 +234,19 @@ const handleBookSlot = (data) => {
   }
 };
 
-
-
 onMounted(() => {
   fillChartData();
   // addSampleItems();
   getAllStations();
-  console.log('loaded')
+  console.log('loaded');
+  updateStoreLocation();
 });
-
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 
 const transactionBarItems = computed(() => mainStore.history);
+
+const locationData = computed(() => mainStore.storeLocation);
 
 const toggleView = () => {
   mapView.value = !mapView.value;
