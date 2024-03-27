@@ -29,12 +29,12 @@ export const useChargersStore = defineStore('chargers', () => {
         maxBodyLength: Infinity,
         url: `http://localhost:5001/charging-station/nearby_stations_booking`,
         params: {
-          lat,
-          lon,
-          radius,
-          booking_time: bookingTime,
-          booking_duration: bookingDuration,
-          booking_date: bookingDate,
+          "lat": lat,
+          "lon": lon,
+          "radius": radius,
+          "booking_time": bookingTime,
+          "booking_duration": bookingDuration,
+          "booking_date": bookingDate,
         }
       };
       const response = await axios(config);

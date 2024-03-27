@@ -27,6 +27,7 @@
 
 <script>
 import { useMainStore } from '@/stores/main';
+import { useChargersStore } from '@/stores/chargers';
 import { computed, ref, onMounted, watch } from 'vue';
 
 export default {
@@ -119,6 +120,9 @@ export default {
     mainStore() {
       return useMainStore();
     },
+    chargersStore() {
+      return useChargersStore();
+    },
   },
   methods: {
     updateStoreLocation(latitude, longitude) {
@@ -153,8 +157,8 @@ export default {
     },
     async getAllStations() {
       try {
-        await this.mainStore.fetchAllStations();
-        const data = this.mainStore.chargerslist;
+        await this.chargersStore.fetchAllStations();
+        const data = this.chargersStore.chargerslist;
         console.log('Successfully retrieve all stations', data);
         this.addMarkersAroundCurrentLocation(data);
       } catch (error) {

@@ -73,6 +73,7 @@
 import { ref } from 'vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { useMainStore } from '@/stores/main';
+import { useChargersStore } from '@/stores/chargers';
 
 export default {
   components: {
@@ -89,6 +90,9 @@ export default {
   computed: {
     mainStore() {
       return useMainStore();
+    },
+    chargersStore() {
+      return useChargersStore();
     },
   },
   methods: {

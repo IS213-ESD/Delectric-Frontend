@@ -98,6 +98,7 @@
 <script setup>
 import { computed, ref, onMounted, watch } from 'vue';
 import { useMainStore } from '@/stores/main';
+import { useChargersStore } from '@/stores/chargers';
 import {
   mdiAccountMultiple,
   mdiCartOutline,
@@ -127,6 +128,7 @@ import { toggleDrawer } from '@/helpers/common';
 import FilterDrawer from '@/components/Drawer/FilterDrawer.vue';
 import { useRouter } from 'vue-router';
 
+const mainStore = useMainStore()
 const chargersStore = useChargersStore();
 
 const mapView = ref(false); // Set default view to map view
@@ -154,7 +156,7 @@ const updateStoreLocation = async (latitude, longitude) => {
 
 const receiveIsFiltered = async (data) => {
   console.log('receiveisfiltered', mainStore.storeLocation);
-  await mainStore
+  await chargersStore
     .fetchNearbyStations(
       mainStore.storeLocation.latitude,
       mainStore.storeLocation.longitude,
@@ -164,7 +166,8 @@ const receiveIsFiltered = async (data) => {
       mainStore.storeLocation.date
     )
     .then(() => {
-      let data = mainStore.chargerslist;
+      let data = chargersStore.chargerslist;
+      console.log(data)
       listItems.value = [];
       if (data && Array.isArray(data)) {
         for (const item of data) {
@@ -175,7 +178,6 @@ const receiveIsFiltered = async (data) => {
             distance: item.distance,
           });
         }
-        console.log('test', mainStore.storeLocation);
       } else {
         console.error('chargerslist is empty or not an array');
       }
@@ -186,8 +188,8 @@ const receiveIsFiltered = async (data) => {
 
 const getAllStations = async () => {
   try {
-    await mainStore.fetchAllStations();
-    const data = mainStore.chargerslist;
+    await chargersStore.fetchAllStations();
+    const data = chargersStore.chargerslist;
     console.log('data', data);
     listItems.value = [];
     if (data && Array.isArray(data)) {
