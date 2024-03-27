@@ -137,10 +137,10 @@
           <div class="card-body">
             <div class="flex justify-between items-baseline">
               <span class="text-slate-400 text-xs">Booking ends in {{ calculateRemainingTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
-              <!-- <span class="text-slate-400 text-xs">Est. {{ booking.booking_duration_hours }} Hours to fully charged</span> -->
-              <span>⚡60%</span>
+              <span>{{booking.charger_info.charging_status == 'Not Charging' ? '~': "⚡" + booking.charger_info.charging_status + "%"}}</span>
             </div>
-            <progress class="progress h-3 progress-accent w-100" value="60" max="100"></progress>
+            <progress v-if="booking.charger_info.charging_status != 'Not Charging'" class="progress h-3 progress-accent w-100" :value="booking.charger_info.charging_status" max="100"></progress>
+            <progress v-else class="progress h-3 w-100" max="100"></progress>
             <div class="flex justify-between align-middle">
               <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
             </div>
@@ -172,64 +172,6 @@
           </div>
         </div>
       </template>
-      <!-- <div class="card bg-base-100">
-        <figure>
-          <img
-            src="https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2021/01/09/us-automobile-environment-tesla-052911.jpg?VersionId=VBWE6tjAISYWZ3s1BLeqAM7N_IKrMyOW"
-          />
-        </figure>
-        <div class="card-body">
-          <div class="flex justify-between items-baseline">
-            <span class="text-slate-400 text-xs"
-              >Est. 3 Hours to fully charged</span
-            >
-            <span>⚡60%</span>
-          </div>
-          <progress
-            class="progress h-3 progress-accent w-100"
-            value="60"
-            max="100"
-          ></progress>
-          <div class="flex justify-between align-middle">
-            <h2 class="card-title">NAFA Campus Charging Station</h2>
-          </div>
-          <span class="text-slate-400">190 Middle Rd, Singapore 188979</span>
-          <span class="text-slate-400"
-            >Booked From: 1PM-3PM (30 Mins remaining)</span
-          >
-          <div class="card-actions mt-5">
-            <button class="btn btn-primary btn-outline w-full">
-              END CHARGING
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="card bg-base-100">
-        <figure>
-          <img
-            src="https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2021/01/09/us-automobile-environment-tesla-052911.jpg?VersionId=VBWE6tjAISYWZ3s1BLeqAM7N_IKrMyOW"
-          />
-        </figure>
-        <div class="card-body">
-          <progress
-            class="progress h-3 progress-neutral w-100"
-            value="30"
-            max="100"
-          ></progress>
-          <div class="flex justify-between align-middle">
-            <h2 class="card-title">NAFA Campus Charging Station</h2>
-          </div>
-          <span class="text-slate-400">190 Middle Rd, Singapore 188979</span>
-          <span class="text-slate-400"
-            >Booked From: 10PM-12AM (5 Hours to booking)</span
-          >
-          <div class="card-actions mt-5">
-            <button class="btn btn-primary btn-outline w-full">
-              CANCEL BOOKING
-            </button>
-          </div>
-        </div>
-      </div> -->
     </div>
   </LayoutAuthenticated>
 </template>
