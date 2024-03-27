@@ -127,7 +127,7 @@ import { toggleDrawer } from '@/helpers/common';
 import FilterDrawer from '@/components/Drawer/FilterDrawer.vue';
 import { useRouter } from 'vue-router';
 
-const mainStore = useMainStore();
+const chargersStore = useChargersStore();
 
 const mapView = ref(false); // Set default view to map view
 const chartData = ref(null);

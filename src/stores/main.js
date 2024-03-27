@@ -150,7 +150,6 @@ export const useMainStore = defineStore('main', () => {
     isFieldFocusRegistered,
     clients,
     history,
-    chargerslist,
     setUser,
     fetchSampleClients,
     fetchSampleHistory,
