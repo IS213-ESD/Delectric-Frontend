@@ -95,7 +95,9 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.getAllStations();
+  },
   computed: {
     mainStore() {
       return useMainStore();
