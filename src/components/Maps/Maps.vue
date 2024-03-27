@@ -80,7 +80,7 @@ export default {
   },
   data() {
     return {
-      center: { lat: 1.2963, lng: 103.8502 }, // Initialize with a default coordinate
+      // center: { lat: 1.0963, lng: 103.8502 }, // Initialize with a default coordinate
       zoom: 16,
       markers: [],
       disableDefaultUI: true,
@@ -95,27 +95,7 @@ export default {
     };
   },
 
-  mounted() {
-    // Get current location using Geolocation API
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        // Set the center to the user's current location
-        this.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-
-        this.updateStoreLocation(this.center.lat, this.center.lng);
-
-        // Add multiple markers around the current location
-        this.getAllStations();
-        // this.addMarkersAroundCurrentLocation();
-      },
-      (error) => {
-        console.error('Error getting current location:', error);
-      }
-    );
-  },
+  mounted() {},
   computed: {
     mainStore() {
       return useMainStore();
@@ -123,29 +103,17 @@ export default {
     chargersStore() {
       return useChargersStore();
     },
+    center() {
+      console.log('init center', this.mainStore.center);
+      return this.mainStore.center;
+    },
   },
   methods: {
     updateStoreLocation(latitude, longitude) {
       // const mainStore = useMainStore();
       this.mainStore.updateStoreLocation(latitude, longitude);
     },
-    async reverseGeocode(lat, lng) {
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyA-R-V5D-Di4Y4NcmW-DFt0Aez9AOxj5X0`
-        );
-        const data = await response.json();
-        if (data.status === 'OK' && data.results.length > 0) {
-          const address = data.results[0].formatted_address;
-          return address;
-        } else {
-          return 'Address not found';
-        }
-      } catch (error) {
-        console.error('Error fetching address:', error);
-        return 'Error fetching address';
-      }
-    },
+
     async handleMarkerClick(marker) {
       const lat = marker.position.lat;
       const lng = marker.position.lng;

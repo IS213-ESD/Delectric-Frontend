@@ -13,6 +13,7 @@ export const useMainStore = defineStore('main', () => {
   const radius = ref('100');
   const hrs = ref(27);
   const bookingDate = ref('2024-03-08');
+  const center = ref({});
 
   const userAvatar = computed(
     () =>
@@ -20,6 +21,31 @@ export const useMainStore = defineStore('main', () => {
         /[^a-z0-9]+/gi,
         '-'
       )}`
+  );
+
+  // get current location using Google Maps API navigator
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      // Set the center to the user's current location
+      center.value = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+
+      console.log('Shawn is here', center.value);
+
+      updateStoreLocation(center.value.lat, center.value.lng);
+
+      // Add multiple markers around the current location
+      // getAllStations();
+
+      // Add multiple markers around the current location
+      // this.getAllStations();
+      // this.addMarkersAroundCurrentLocation();
+    },
+    (error) => {
+      console.error('Error getting current location:', error);
+    }
   );
 
   const isFieldFocusRegistered = ref(false);
@@ -87,5 +113,6 @@ export const useMainStore = defineStore('main', () => {
     radius,
     hrs,
     bookingDate,
+    center,
   };
 });
