@@ -45,7 +45,7 @@
     function formatEndTime(dateTimeString, duration) {
       const dateTime = new Date(dateTimeString)
       dateTime.setHours(dateTime.getHours() + duration)
-      return `${padZero(dateTime.getHours())}:${padZero(dateTime.getMinutes())}`
+      return `${dateTime.toLocaleDateString()} ${padZero(dateTime.getHours())}:${padZero(dateTime.getMinutes())}`
     }
     // Helper function to pad single digits with leading zeros
     function padZero(num) {
@@ -60,7 +60,6 @@
 
       const remainingTimeMilliseconds = bookingTime - currentTime;
       const remainingMinutes = Math.ceil(remainingTimeMilliseconds / (1000 * 60));
-      console.log(remainingMinutes)
       if (remainingMinutes >= 24 * 60) {
         const remainingDays = Math.floor(remainingMinutes / (24 * 60));
         return `${remainingDays} day${remainingDays !== 1 ? 's' : ''}`;
@@ -79,7 +78,6 @@
 
       const remainingTimeMilliseconds = bookingTime - currentTime;
       const remainingMinutes = Math.ceil(remainingTimeMilliseconds / (1000 * 60));
-      console.log(remainingMinutes)
       if (remainingMinutes >= 24 * 60) {
         const remainingDays = Math.floor(remainingMinutes / (24 * 60));
         return `${remainingDays} day${remainingDays !== 1 ? 's' : ''} to booking`;
