@@ -128,9 +128,6 @@ import { toggleDrawer } from '@/helpers/common';
 import FilterDrawer from '@/components/Drawer/FilterDrawer.vue';
 import { useRouter } from 'vue-router';
 
-const mainStore = useMainStore()
-const chargersStore = useChargersStore();
-
 const mapView = ref(false); // Set default view to map view
 const chartData = ref(null);
 const listItems = ref([]); // Array to hold list items
@@ -151,13 +148,34 @@ const receiveMarkerAdresss = (data) => {
 // Function to update store location
 const updateStoreLocation = async (latitude, longitude) => {
   await mainStore.updateStoreLocation(latitude, longitude);
-  // console.log(mainStore.storeLocation.value); // Access the value property of storeLocation
 };
 
+const mainStore = useMainStore();
+
+const centerValue = ref(mainStore.center); // Reactive variable to hold the center value
+
+const initCenter = computed(() => {
+  // console.log('Computed property: initCenter', mainStore.center);
+  return mainStore.center;
+});
+
+// Watch for changes to the center value
+watch(
+  () => mainStore.center,
+  async (newValue, oldValue) => {
+    console.log('Center value changed:', newValue);
+    centerValue.value = newValue; // Update the component state
+    // Perform any other actions based on the new center value
+    await receiveNearbyStations(); // Call receiveNearbyStations after the center value is updated
+  }
+);
+
+const chargersStore = useChargersStore();
+
 const receiveIsFiltered = async (data) => {
-  console.log('receiveisfiltered', mainStore.storeLocation);
+  // console.log('receiveisfiltered', mainStore.storeLocation);
   await chargersStore
-    .fetchNearbyStations(
+    .fetchNearbyAvailStations(
       mainStore.storeLocation.latitude,
       mainStore.storeLocation.longitude,
       mainStore.storeLocation.radius,
@@ -167,7 +185,7 @@ const receiveIsFiltered = async (data) => {
     )
     .then(() => {
       let data = chargersStore.chargerslist;
-      console.log(data)
+      console.log('receiveIsFiltered', data);
       listItems.value = [];
       if (data && Array.isArray(data)) {
         for (const item of data) {
@@ -186,11 +204,43 @@ const receiveIsFiltered = async (data) => {
   isFiltered.value = data;
 };
 
+const receiveNearbyStations = async () => {
+  if (!centerValue.value) {
+    // If centerValue is not yet initialized, wait for it to be initialized
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
+  try {
+    await chargersStore.fetchNearbyStations(
+      centerValue.value.lat,
+      centerValue.value.lng,
+      mainStore.storeLocation.radius
+    );
+    const data = chargersStore.chargerslist;
+    console.log('receiveNearbyStations', data);
+    listItems.value = [];
+    if (data && Array.isArray(data)) {
+      for (const item of data) {
+        listItems.value.push({
+          id: item.charger_id,
+          name: item.charger_name,
+          street: item.charger_location,
+          distance: item.distance,
+        });
+      }
+    } else {
+      console.error('chargerslist is empty or not an array');
+    }
+  } catch (error) {
+    console.error('Error receiving nearby stations:', error);
+    // Handle error gracefully, e.g., show a message to the user
+  }
+};
+
 const getAllStations = async () => {
   try {
     await chargersStore.fetchAllStations();
     const data = chargersStore.chargerslist;
-    console.log('data', data);
+    console.log('getAllStations', data);
     listItems.value = [];
     if (data && Array.isArray(data)) {
       for (const item of data) {
@@ -218,7 +268,7 @@ const buttonText = computed(() => {
 });
 
 const handleBookSlot = (data) => {
-  console.log(isFiltered.value);
+  // console.log(isFiltered.value);
   if (isFiltered.value === false) {
     toggleView();
   }
@@ -240,8 +290,8 @@ onMounted(() => {
   fillChartData();
   // addSampleItems();
   getAllStations();
-  console.log('loaded');
   updateStoreLocation();
+  receiveNearbyStations();
 });
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));

@@ -13,7 +13,7 @@ export const useMainStore = defineStore('main', () => {
   const radius = ref('100');
   const hrs = ref(27);
   const bookingDate = ref('2024-03-08');
-  const center = ref({});
+  const center = ref({ lat: 1, lng: 2 });
 
   const userAvatar = computed(
     () =>
@@ -32,16 +32,11 @@ export const useMainStore = defineStore('main', () => {
         lng: position.coords.longitude,
       };
 
-      console.log('Shawn is here', center.value);
+      // console.log('Shawn is here', center.value);
 
-      updateStoreLocation(center.value.lat, center.value.lng);
-
-      // Add multiple markers around the current location
-      // getAllStations();
-
-      // Add multiple markers around the current location
-      // this.getAllStations();
-      // this.addMarkersAroundCurrentLocation();
+      // updateStoreLocation(center.value.lat, center.value.lng);
+      latitude.value = position.coords.latitude;
+      longitude.value = position.coords.longitude;
     },
     (error) => {
       console.error('Error getting current location:', error);
