@@ -11,8 +11,9 @@ export const useMainStore = defineStore('main', () => {
   const longitude = ref(0);
   const currentTimeString = ref('');
   const radius = ref('100');
-  const hrs = ref(27);
+  const bookingDuration = ref(2);
   const bookingDate = ref('2024-03-08');
+  const bookingTime = ref(null);
   const center = ref({ lat: 1, lng: 2 });
 
   const userAvatar = computed(
@@ -22,6 +23,16 @@ export const useMainStore = defineStore('main', () => {
         '-'
       )}`
   );
+
+  const storeLocation = computed(() => ({
+    latitude: latitude.value,
+    longitude: longitude.value,
+    radius: radius.value,
+    currentTimeString: currentTimeString.value,
+    bookingTime: bookingTime.value,
+    bookingDate: bookingDate.value,
+    bookingDuration: bookingDuration.value,
+  }));
 
   // get current location using Google Maps API navigator
   navigator.geolocation.getCurrentPosition(
@@ -55,7 +66,7 @@ export const useMainStore = defineStore('main', () => {
 
   const receiveBookingFilter = (date, hrsBooked) => {
     bookingFilter.value = { date, hrsBooked };
-    hrs.value = hrsBooked;
+    bookingDuration.value = hrsBooked;
     const modifyDate = new Date(date);
 
     const year = date.getFullYear();
@@ -63,17 +74,16 @@ export const useMainStore = defineStore('main', () => {
     const day = String(modifyDate.getDate()).padStart(2, '0');
 
     const formattedDate = `${year}-${month}-${day}`;
-    bookingDate.value = formattedDate;
-  };
+    bookingDate.value = formattedDate; // get date only
 
-  const storeLocation = computed(() => ({
-    latitude: latitude.value,
-    longitude: longitude.value,
-    radius: radius.value,
-    currentTimeString: currentTimeString.value,
-    hrs: hrs.value,
-    date: bookingDate.value,
-  }));
+    // Extract hours, minutes, and seconds
+    const hours = String(date.getHours()).padStart(2, '0'); // Pad with leading zero if single digit
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // Format the time in the "hh:mm:ss" format
+    bookingTime.value = `${hours}:${minutes}:${seconds}`; // get time only
+  };
 
   // Function to update store location
   const updateStoreLocation = (lat, lon) => {
@@ -106,8 +116,9 @@ export const useMainStore = defineStore('main', () => {
     longitude,
     currentTimeString,
     radius,
-    hrs,
+    bookingDuration,
     bookingDate,
+    bookingTime,
     center,
   };
 });

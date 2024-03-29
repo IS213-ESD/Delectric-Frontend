@@ -173,34 +173,50 @@ watch(
 const chargersStore = useChargersStore();
 
 const receiveIsFiltered = async (data) => {
-  // console.log('receiveisfiltered', mainStore.storeLocation);
-  await chargersStore
-    .fetchNearbyAvailStations(
-      mainStore.storeLocation.latitude,
-      mainStore.storeLocation.longitude,
-      mainStore.storeLocation.radius,
-      mainStore.storeLocation.currentTimeString,
-      mainStore.storeLocation.hrs,
-      mainStore.storeLocation.date
-    )
-    .then(() => {
-      let data = chargersStore.chargerslist;
-      console.log('receiveIsFiltered', data);
-      listItems.value = [];
-      if (data && Array.isArray(data)) {
-        for (const item of data) {
-          listItems.value.push({
-            id: item.charger_id,
-            name: item.charger_name,
-            street: item.charger_location,
-            distance: item.distance,
-          });
-        }
-      } else {
-        console.error('chargerslist is empty or not an array');
-      }
-    });
+  // Watch for changes in mainStore.storeLocation and call receiveIsFiltered when it changes
+  watch(
+    () => mainStore.storeLocation,
+    () => {
+      // receiveIsFiltered();
 
+      console.log(mainStore.storeLocation.bookingTime);
+      console.log(mainStore.storeLocation.bookingDate);
+      console.log(mainStore.bookingDuration);
+      console.log(mainStore.storeLocation.currentTimeString);
+
+      try {
+        // Call fetchNearbyAvailStations with the updated storeLocation
+        chargersStore.fetchNearbyAvailStations(
+          mainStore.storeLocation.latitude,
+          mainStore.storeLocation.longitude,
+          mainStore.storeLocation.radius,
+          mainStore.storeLocation.bookingTime,
+          mainStore.storeLocation.bookingDuration,
+          mainStore.storeLocation.bookingDate
+        );
+
+        // Once the data is fetched, update listItems
+        let data = chargersStore.chargerslist;
+        console.log('receiveIsFiltered', data);
+        listItems.value = [];
+        if (data && Array.isArray(data)) {
+          for (const item of data) {
+            listItems.value.push({
+              id: item.charger_id,
+              name: item.charger_name,
+              street: item.charger_location,
+              distance: item.distance,
+            });
+          }
+        } else {
+          console.error('chargerslist is empty or not an array');
+        }
+      } catch (error) {
+        console.error('Error fetching nearby stations:', error);
+        // Handle error gracefully, e.g., show a message to the user
+      }
+    }
+  );
   isFiltered.value = data;
 };
 
