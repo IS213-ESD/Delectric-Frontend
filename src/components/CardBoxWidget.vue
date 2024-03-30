@@ -47,6 +47,10 @@ defineProps({
     type: String,
     default: null,
   },
+  status: {
+    type: String,
+    default: null,
+  },
   trendType: {
     type: String,
     default: null,
@@ -59,7 +63,7 @@ defineProps({
 <template>
   <CardBox class="cursor-pointer">
     <BaseLevel v-if="trend" class="mb-3" mobile>
-      <PillTagTrend :trend="trend" :trend-type="trendType" small />
+      <PillTagTrend :trend="status" :trend-type="trendType" small />
       <!-- <BaseButton
         :icon="mdiCog"
         icon-w="w-4"

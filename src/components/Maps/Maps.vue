@@ -12,6 +12,11 @@
         :position="center"
         icon="https://maps.google.com/mapfiles/kml/pal2/icon31.png"
       />
+      <GMapCircle
+        :center="center"
+        :radius="circleRadius"
+        :options="circleOptions"
+      />
 
       <!-- Display multiple markers -->
       <GMapMarker
@@ -22,12 +27,16 @@
         @click="selectMarker(marker)"
       />
     </GMapMap>
+    <img :src="Charge" class="w-8" />
   </div>
 </template>
 
 <script>
 import { useMainStore } from '@/stores/main';
 import { useChargersStore } from '@/stores/chargers';
+import currentLocationImage from '@/assets/currentLocation.png';
+import Charge from '@/assets/Charge.png';
+
 import { computed, ref, onMounted, watch } from 'vue';
 
 export default {
@@ -85,6 +94,16 @@ export default {
       markers: [],
       disableDefaultUI: true,
       gestureHandling: 'greedy',
+      circleRadius: 100, // Set radius of the circle in meters
+      currentLocationImage: null,
+      center: { lat: null, lng: null },
+      circleOptions: {
+        strokeColor: 'blue',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: 'blue',
+        fillOpacity: 0.35,
+      },
 
       mapStyle: {
         width: '100%',
@@ -109,6 +128,14 @@ export default {
       console.log('init center', this.mainStore.center);
       return this.mainStore.center;
     },
+  },
+  created() {
+    this.mainStore = useMainStore();
+    this.center = {
+      lat: this.mainStore.latitude,
+      lng: this.mainStore.longitude,
+    };
+    this.currentLocationImage = currentLocationImage;
   },
   methods: {
     updateStoreLocation(latitude, longitude) {

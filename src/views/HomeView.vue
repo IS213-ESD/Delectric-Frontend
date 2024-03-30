@@ -57,7 +57,7 @@
             <CardBoxWidget
               v-for="item in listItems"
               :key="item.id"
-              trend="12%"
+              :trend="item.status"
               trend-type="up"
               color="text-emerald-500"
               :icon="mdiAccountMultiple"
