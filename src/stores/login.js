@@ -16,6 +16,7 @@ export const useLoginStore = defineStore({
     error: null,
     profileCompleted: localStorage.getItem('profileCompleted') || null,
     paymentToken: localStorage.getItem('payment') || null,
+    userDetails: null
   }),
 
   // Actions to perform asynchronous operations
@@ -45,6 +46,24 @@ export const useLoginStore = defineStore({
         throw error
       }
     },
+    async getuserdetails(){
+        try{
+            let result = await authService.getuserdetails(this.userId)
+            this.userDetails = result
+            console.log(this.userDetails.username)
+        }catch (error){
+            throw error
+        }
+    },
+    clearState(){
+      this.user= localStorage.getItem('user') || null
+      this.userId= localStorage.getItem('userId') || null
+      this.isLoggedIn= false
+      this.error= null
+      this.profileCompleted= localStorage.getItem('profileCompleted') || null
+      this.paymentToken= localStorage.getItem('payment') || null
+      this.userDetails= null
+    }
 
     // async logout({ commit }) {
     //   // Perform logout operation here

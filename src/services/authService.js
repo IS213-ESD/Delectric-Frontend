@@ -35,6 +35,7 @@ const authService = {
   async getuserdetails(user_id) {
     try {
       const response = await axios.get(`${BASE_URL}/getuserdetails/${user_id}`)
+      console.log(response.data)
       return response.data
     } catch (error) {
       error.message = error?.response?.data?.message

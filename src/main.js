@@ -64,6 +64,8 @@ const redirectToLoginPage = () => {
   console.log("[USER ID]", loginStore.userId)
   if (!loginStore.userId) {
     router.push('/login');
+  }else{
+    loginStore.getuserdetails()
   }
 };
 redirectToLoginPage();
