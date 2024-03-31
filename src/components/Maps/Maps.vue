@@ -27,7 +27,15 @@
         @click="selectMarker(marker)"
       />
     </GMapMap>
-    <img :src="Charge" class="w-8" />
+    <CustomDrawer
+      :drawer-id="1"
+      :drawer-title="cardContent[0].name"
+      :drawer-subtitle="cardContent[0].street"
+      :button-true="buttonText"
+      @book-slot="handleBookSlot"
+      :disabled="isFiltered"
+    >
+    </CustomDrawer>
   </div>
 </template>
 
@@ -35,7 +43,8 @@
 import { useMainStore } from '@/stores/main';
 import { useChargersStore } from '@/stores/chargers';
 import currentLocationImage from '@/assets/currentLocation.png';
-import Charge from '@/assets/Charge.png';
+import CustomDrawer from '@/components/Drawer/CustomDrawer.vue';
+import { toggleDrawer } from '@/helpers/common';
 
 import { computed, ref, onMounted, watch } from 'vue';
 
@@ -104,13 +113,17 @@ export default {
         fillColor: 'blue',
         fillOpacity: 0.35,
       },
-
+      adress: null,
       mapStyle: {
         width: '100%',
         height: '400px',
         backgroundColor: '#f5f5f5', // Set background color
         borderRadius: '20px', // Add border radius
       },
+
+      cardContent: [{ id: 1, name: 'Drawer Title', street: 'Drawer Subtitle' }],
+      buttonText: 'Button Text',
+      isFiltered: false,
     };
   },
 
@@ -138,6 +151,9 @@ export default {
     this.currentLocationImage = currentLocationImage;
   },
   methods: {
+    handleBookSlot() {
+      // Your method logic here
+    },
     updateStoreLocation(latitude, longitude) {
       // const mainStore = useMainStore();
       this.mainStore.updateStoreLocation(latitude, longitude);
@@ -146,10 +162,10 @@ export default {
     async handleMarkerClick(marker) {
       const lat = marker.position.lat;
       const lng = marker.position.lng;
-      const address = await this.reverseGeocode(lat, lng);
       // Display the address in a tooltip or info window
+      const address = null;
       marker.tooltip = address;
-      console.log(address);
+      console.log(marker);
       this.$emit('marker-address', address);
     },
     async getAllStations() {
@@ -165,9 +181,13 @@ export default {
     addMarkersAroundCurrentLocation(data) {
       // Generate random positions around the current location for demonstration
       for (let i = 0; i < data.length; i++) {
+        console.log(data);
         const lat = data[i].latitude;
         const lng = data[i].longitude;
         const marker = {
+          id: data[i].charger_id,
+          location: data[i].charger_location,
+          name: data[i].charger_name,
           position: { lat, lng },
           tooltip: '',
         };
@@ -178,7 +198,22 @@ export default {
     selectMarker(marker) {
       // Handle marker click event
       console.log('Marker clicked:', marker);
-      this.handleMarkerClick(marker);
+      this.logValues(marker);
+
+      // this.handleMarkerClick(marker);
+    },
+    logValues(item) {
+      console.log('Clicked Item:', item.name);
+      console.log('Clicked Item:', item);
+      this.cardContent.value = [];
+      this.cardContent.value.push({
+        id: item.id,
+        name: item.name,
+        street: item.street,
+        distance: 0.55,
+      });
+      console.log('cardContent', this.cardContent);
+      toggleDrawer('1');
     },
   },
 };

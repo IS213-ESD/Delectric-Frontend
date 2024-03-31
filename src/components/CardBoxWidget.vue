@@ -9,6 +9,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import Charge from '@/assets/Charge.png';
 
 import { ref } from 'vue';
+import { TimeScale } from 'chart.js';
 
 defineProps({
   number: {
@@ -35,8 +36,18 @@ defineProps({
     type: String,
     default: null,
   },
+  TimeSlot: {
+    // For calendar
+    type: String,
+    default: null,
+  },
+  TimeSlotStatusColor: {
+    // For calendar
+    type: String,
+    default: null,
+  },
   distance: {
-    type: Number,
+    type: String,
     default: 0,
   },
   color: {
@@ -61,7 +72,7 @@ defineProps({
 </script>
 
 <template>
-  <CardBox class="cursor-pointer">
+  <CardBox class="cursor-pointer" :class="TimeSlotStatusColor">
     <BaseLevel v-if="trend" class="mb-3" mobile>
       <PillTagTrend :trend="status" :trend-type="trendType" small />
       <!-- <BaseButton
@@ -79,12 +90,13 @@ defineProps({
           {{ label }}
         </h1>
         <div class="flex flex-row gap-2 overflow-hidden">
-          <h1 class="w-2/5 text-lg leading-tight text-slate-400">
-            {{ distance }} km
+          <h1 class="text-lg leading-tight">
+            {{ distance }}
+            {{ TimeSlot }}
 
             <!-- <NumberDynamic :value="number" :prefix="prefix" :suffix="suffix" /> -->
           </h1>
-          <p>•</p>
+          <p></p>
           <h1
             class="text-ellipsis overflow-hidden text-lg leading-tight text-slate-400 truncate"
           >

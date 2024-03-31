@@ -1,10 +1,25 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import axios from 'axios'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import axios from 'axios';
 
 export const useBookingStore = defineStore('booking', () => {
   // Chargers in the area
-  const bookingList = ref([])
+  const bookingList = ref([]);
+
+  async function fetchChargerBookings() {
+    try {
+      const config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `http://localhost:5001/charging-station-booking/charger/1`,
+      };
+      const response = await axios(config);
+      const userBookings = response?.data;
+      bookingList.value = userBookings || [];
+    } catch (error) {
+      console.error('Error fetching user bookings:', error);
+    }
+  }
 
   async function fetchAllBookingsUser() {
     try {
@@ -28,14 +43,14 @@ export const useBookingStore = defineStore('booking', () => {
         url: 'http://localhost:5011/booking-complex/endbooking',
         data: {
           booking_id: bookingId,
-          user_id: userId
-        }
-      }
-      const response = await axios(config)
-      return response.data
+          user_id: userId,
+        },
+      };
+      const response = await axios(config);
+      return response.data;
     } catch (error) {
-      console.error('Error ending booking:', error)
-      throw error
+      console.error('Error ending booking:', error);
+      throw error;
     }
   }
 
@@ -46,22 +61,22 @@ export const useBookingStore = defineStore('booking', () => {
         url: 'http://localhost:5011/booking-complex/cancelbooking',
         data: {
           booking_id: bookingId,
-          user_id: userId
-        }
-      }
-      const response = await axios(config)
-      return response.data
+          user_id: userId,
+        },
+      };
+      const response = await axios(config);
+      return response.data;
     } catch (error) {
-      console.error('Error ending booking:', error)
-      throw error
+      console.error('Error ending booking:', error);
+      throw error;
     }
   }
-
 
   return {
     bookingList,
     fetchAllBookingsUser,
     endBooking,
-    cancelBooking
-  }
-})
+    cancelBooking,
+    fetchChargerBookings,
+  };
+});

@@ -61,32 +61,22 @@
               trend-type="up"
               color="text-emerald-500"
               :icon="mdiAccountMultiple"
-              :distance="item.distance"
+              :distance="item.distance + 'km'"
               :label="item.name"
               :street="item.street"
               @click="logValues(item)"
+              class="bg-slate-900 text-slate-200"
             />
           </div>
         </div>
       </div>
 
-      <!-- <CustomDrawer
-        :drawer-id="1"
-        :page-name="hello"
-        :drawer-title="cardContent[0].name"
-        :drawer-subtitle="cardContent[0].street"
-        :button-true="
-          isFiltered ? 'Book Slot' : 'Please filter before selecting'
-        "
-        @book-slot="handleBookSlot"
-        :disabled="isFiltered"
-      >
-      </CustomDrawer> -->
       <CustomDrawer
         :drawer-id="1"
         :drawer-title="cardContent[0].name"
         :drawer-subtitle="cardContent[0].street"
         :button-true="buttonText"
+        button-false="Explore more timings"
         @book-slot="handleBookSlot"
         :disabled="isFiltered"
       >
@@ -320,25 +310,13 @@ const toggleView = () => {
   mapView.value = !mapView.value;
 };
 
-const addSampleItems = () => {
-  listItems.value.push(
-    {
-      id: 1,
-      name: 'NAFA Campus 1',
-      street: '21 Tampines Avenue 1, Singapore 599242',
-      distance: 0.55,
-    },
-    { id: 2, name: 'Odeon Towers', street: 'ljfnvjnv', distance: 0.44 },
-    { id: 3, name: 'Fortune Centre', street: 'ljfnvjnv', distance: 0.35 }
-  );
-};
-
 const cardContent = ref([
   { id: 1, name: 'NAFA Campus 1', street: 'ljfnvjnv', distance: 0.55 },
 ]);
 
 const logValues = (item) => {
   console.log('Clicked Item:', item.name);
+
   cardContent.value = [];
   cardContent.value.push({
     id: item.id,
@@ -348,9 +326,5 @@ const logValues = (item) => {
   });
   console.log(cardContent);
   toggleDrawer('1');
-};
-
-const onDrawerClose = () => {
-  toggleDrawer(this.drawerId);
 };
 </script>
