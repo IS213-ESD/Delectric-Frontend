@@ -23,11 +23,52 @@ const authService = {
       // Perform signup operation here
       // Example: Call API to register new user
       // If signup successful, return success message
-      const response = await axios.post('http://localhost:5002/signup', { email, password })
+      const response = await axios.post(`${BASE_URL}/signup`, {email, password, phone: ""})
       console.log(response)
       return response.data
     } catch (error) {
       // If signup fails, throw error
+      error.message = error?.response?.data?.message
+      throw error
+    }
+  },
+  async getuserdetails(user_id) {
+    try {
+      // Perform signup operation here
+      // Example: Call API to register new user
+      // If signup successful, return success message
+      const response = await axios.get(`${BASE_URL}/getuserdetails/${user_id}`)
+      return response.data
+    } catch (error) {
+      // If signup fails, throw error
+      error.message = error?.response?.data?.message
+      throw error
+    }
+  },
+  async updateuserdetails({phone, username}) {
+    try {
+      const response = await axios.post(`${BASE_URL}/userdetails`, {
+        phone,
+        username,
+        user_id,
+        "homeaddress": "",
+      })
+      return response.data
+    } catch (error) {
+      error.message = error?.response?.data?.message
+      throw error
+    }
+  },
+  async updateuserpayment({user_id, token}) {
+    try {
+      const response = await axios.post(`${BASE_URL}/paymentdetails`, {
+        "user_id": user_id,
+        "token": {
+          "id": token
+        }
+      })
+      return response.data
+    } catch (error) {
       error.message = error?.response?.data?.message
       throw error
     }

@@ -13,7 +13,9 @@ export const useLoginStore = defineStore({
     user: localStorage.getItem('user') || null,
     userId: localStorage.getItem('userId') || null,
     isLoggedIn: false,
-    error: null
+    error: null,
+    profileCompleted: localStorage.getItem('profileCompleted') || null,
+    paymentToken: localStorage.getItem('payment') || null,
   }),
 
   // Actions to perform asynchronous operations
@@ -31,6 +33,13 @@ export const useLoginStore = defineStore({
         localStorage.setItem('user', username)
         localStorage.setItem('userId', result?.user_id)
         console.log("[LOGIN SUCCESS]", this.user, this.userId)
+        let response = await authService.getuserdetails(this.userId)
+        console.log(response)
+        if (response?.phone == ""){
+            this.profileCompleted = false
+        }else{
+            this.profileCompleted = true
+        }
       } catch (error) {
         // If login fails, update error state
         throw error

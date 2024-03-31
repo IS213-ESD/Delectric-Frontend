@@ -28,6 +28,8 @@ export const useSignupStore = defineStore({
         console.log(this.user)
       } catch (error) {
         // If login fails, update error state
+        this.error = error.message
+        console.log('error')
         throw error
       }
     }

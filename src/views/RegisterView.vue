@@ -59,20 +59,19 @@ const submit = async () => {
     console.log(form)
     if (!form.value.verificationError){
         try {
-            console.log(form.value.login, form.value.pass, form.value.confirmPass)
+            // console.log(form.value.login, form.value.pass, form.value.confirmPass)
             await signupStore.signup({
             "username": form.value.login,
             "password": form.value.pass,
-            }).then(async ()=>{
-                await loginStore.login({
+            })
+            await loginStore.login({
                 "username": form.value.login,
                 "password": form.value.pass,
                 })
-                router.push('/dashboard')
-            })
+            router.push('/card')
         } catch (error) {
-            console.error('Login failed:', error)
-            // Handle login error (e.g., display error message)
+            // console.error('Login failed:', error)
+            form.value.verificationError = "Email already in use"
         }
     }
 }
@@ -82,7 +81,7 @@ const submit = async () => {
   <LayoutGuest>
     <SectionFullScreen v-slot="{ cardClass }" bg="purplePink">
       <CardBox :class="cardClass" is-form @submit.prevent="submit">
-        <FormField label="Login" help="Please enter your login">
+        <FormField label="Email" help="Please enter your email">
           <FormControl
             v-model="form.login"
             :icon="mdiAccount"

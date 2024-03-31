@@ -169,6 +169,25 @@
             </div>
           </div>
         </div>
+        <div v-if="getBookingStatus(booking.booking_datetime, booking.booking_duration_hours)=='Completed'" class="card bg-base-100">
+          <figure>
+            <img :src="'http://localhost:5001/charging-station/images/' + booking.charger_info.charger_image" />
+          </figure>
+          <div class="card-body">
+            <div class="flex justify-between items-baseline">
+              <span class="text-slate-400 text-xs">COMPLETED</span>
+            </div>
+            <progress class="progress h-3 w-100" value="100" max="100"></progress>
+            <div class="flex justify-between align-middle">
+              <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
+            </div>
+            <span class="text-slate-400">{{booking.charger_info.charger_location}}</span>
+            <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
+            <div class="card-actions mt-5">
+              <button class="btn btn-accent w-full" @click="cancelBooking(booking.booking_id)">BOOK AGAIN</button>
+            </div>
+          </div>
+        </div>
       </template>
     </div>
   </LayoutAuthenticated>
