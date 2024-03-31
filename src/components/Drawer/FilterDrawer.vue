@@ -103,8 +103,7 @@ export default {
     },
     filterOptions() {
       // Access the value of hoursBooked
-      console.log('Selected hours booked:', this.hoursBooked);
-      console.log('Date and Time selected:', this.date);
+
       this.showClearFilterButton = true;
       console.log(this.showClearFilterButton);
       const valuee = this.showClearFilterButton;
@@ -115,11 +114,11 @@ export default {
     },
     sendBookingFilter(date, hoursBooked) {
       this.mainStore.receiveBookingFilter(date, hoursBooked);
-      console.log
     },
     clearFilter() {
       this.showClearFilterButton = false;
-      this.$emit('is-filtered', this.showClearFilterButton);
+      this.$emit('no-filter', this.showClearFilterButton);
+      console.log(this.showClearFilterButton);
     },
   },
 };

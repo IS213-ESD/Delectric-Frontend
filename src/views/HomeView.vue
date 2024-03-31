@@ -32,7 +32,10 @@
         />
       </SectionTitleLineWithButton>
 
-      <FilterDrawer @is-filtered="receiveIsFiltered"></FilterDrawer>
+      <FilterDrawer
+        @is-filtered="receiveIsFiltered"
+        @no-filter="receiveNearbyStations"
+      ></FilterDrawer>
 
       <div>
         <!-- Toggle button -->
@@ -76,7 +79,7 @@
         :drawer-title="cardContent[0].name"
         :drawer-subtitle="cardContent[0].street"
         :button-true="buttonText"
-        button-false="Explore more timings"
+        button-false="Explore Booking Slots"
         @book-slot="handleBookSlot"
         :disabled="isFiltered"
       >
@@ -166,22 +169,21 @@ const receiveIsFiltered = async (data) => {
   // Watch for changes in mainStore.storeLocation and call receiveIsFiltered when it changes
   watch(
     () => mainStore.storeLocation,
-    () => {
-      // receiveIsFiltered();
-
+    async () => {
+      // Make the callback function asynchronous
       console.log(mainStore.storeLocation.bookingTime);
       console.log(mainStore.storeLocation.bookingDate);
+      console.log(mainStore.storeLocation.radius);
       console.log(mainStore.bookingDuration);
-      console.log(mainStore.storeLocation.currentTimeString);
 
       try {
-        // Call fetchNearbyAvailStations with the updated storeLocation
-        chargersStore.fetchNearbyAvailStations(
+        // Call fetchNearbyAvailStations with the updated storeLocation and await its completion
+        await chargersStore.fetchNearbyAvailStations(
           mainStore.storeLocation.latitude,
           mainStore.storeLocation.longitude,
           mainStore.storeLocation.radius,
           mainStore.storeLocation.bookingTime,
-          mainStore.storeLocation.bookingDuration,
+          mainStore.bookingDuration,
           mainStore.storeLocation.bookingDate
         );
 
@@ -211,6 +213,8 @@ const receiveIsFiltered = async (data) => {
 };
 
 const receiveNearbyStations = async () => {
+  isFiltered.value = false;
+
   if (!centerValue.value) {
     // If centerValue is not yet initialized, wait for it to be initialized
     await new Promise((resolve) => setTimeout(resolve, 0));
