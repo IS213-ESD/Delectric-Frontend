@@ -2,8 +2,9 @@
     import { reactive, onMounted, computed, ref } from 'vue'
     import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
     import { useBookingStore } from '@/stores/booking'
+    import { useLoginStore } from '@/stores/login'
     const bookingStore = useBookingStore()
-    
+    const loginStore = useLoginStore()
     onMounted(() => {
       fetchAllBookingsUser()
     })
@@ -29,7 +30,7 @@
     // Functions
     async function fetchAllBookingsUser() {
       try {
-        await bookingStore.fetchAllBookingsUser()
+        await bookingStore.fetchAllBookingsUser(loginStore.userId)
         console.log(bookingStore.bookingList)
       } catch (error) {
         console.error('Error fetching user bookings:', error);
@@ -105,7 +106,7 @@
 
     async function cancelBooking(booking_id){
       try {
-        let result = await bookingStore.cancelBooking(booking_id, 1)
+        let result = await bookingStore.cancelBooking(booking_id, loginStore.userId)
         console.log(result)
         fetchAllBookingsUser()
       } catch (error) {
@@ -114,7 +115,7 @@
     }
     async function endBooking(booking_id){
       try {
-        let result = await bookingStore.endBooking(booking_id, 1)
+        let result = await bookingStore.endBooking(booking_id, loginStore.userId)
         console.log(result)
         fetchAllBookingsUser()
       } catch (error) {
@@ -126,69 +127,94 @@
 <template>
   <LayoutAuthenticated>
     <BaseButton to="/dashboard" color="info" class="ml-6 mt-4" label="Back" />
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 px-5 mt-5">  
-      <template v-for="booking in sortedBookings" :key="booking.booking_id">
-        <div v-if="getBookingStatus(booking.booking_datetime, booking.booking_duration_hours)=='In Progress'" class="card bg-base-100">
-          <figure>
-            <img :src="'http://localhost:5001/charging-station/images/' + booking.charger_info.charger_image" />
-          </figure>
-          <div class="card-body">
-            <div class="flex justify-between items-baseline">
-              <span class="text-slate-400 text-xs">Booking ends in {{ calculateRemainingTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
-              <span>{{booking.charger_info.charging_status == 'Not Charging' ? '~': "⚡" + booking.charger_info.charging_status + "%"}}</span>
-            </div>
-            <progress v-if="booking.charger_info.charging_status != 'Not Charging'" class="progress h-3 progress-accent w-100" :value="booking.charger_info.charging_status" max="100"></progress>
-            <progress v-else class="progress h-3 w-100" max="100"></progress>
-            <div class="flex justify-between align-middle">
-              <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
-            </div>
-            <span class="text-slate-400">{{booking.charger_info.charger_location}}</span>
-            <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
-            <div class="card-actions mt-5">
-              <button class="btn btn-primary btn-outline w-full" @click="endBooking(booking.booking_id)">END CHARGING</button>
-            </div>
-          </div>
-        </div>
-        <div v-if="getBookingStatus(booking.booking_datetime, booking.booking_duration_hours)=='Upcoming'" class="card bg-base-100">
-          <figure>
-            <img :src="'http://localhost:5001/charging-station/images/' + booking.charger_info.charger_image" />
-          </figure>
-          <div class="card-body">
-            <div class="flex justify-between items-baseline">
-              <span class="text-slate-400 text-xs">{{ calculateToBookingTime(booking.booking_datetime) }}</span>
-              <span>~</span>
-            </div>
-            <progress class="progress h-3 w-100" max="100"></progress>
-            <div class="flex justify-between align-middle">
-              <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
-            </div>
-            <span class="text-slate-400">{{booking.charger_info.charger_location}}</span>
-            <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
-            <div class="card-actions mt-5">
-              <button class="btn btn-primary btn-outline w-full" @click="cancelBooking(booking.booking_id)">CANCEL BOOKING</button>
+    <div>
+      <div class="stat">
+        <div class="stat-title">MY BOOKINGS</div>
+        <div class="stat-value text-accent">ONGOING</div>
+        <!-- <div class="stat-desc text-secondary">↗︎ 40 (2%)</div> -->
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 px-5">
+        <template v-for="booking in sortedBookings" :key="booking.booking_id">
+          <div v-if="getBookingStatus(booking.booking_datetime, booking.booking_duration_hours)=='In Progress' && booking.booking_status=='IN_PROGRESS'" class="card bg-base-100">
+            <figure>
+              <img :src="'http://localhost:5001/charging-station/images/' + booking.charger_info.charger_image" />
+            </figure>
+            <div class="card-body">
+              <div class="flex justify-between items-baseline">
+                <span class="text-slate-400 text-xs">Booking ends in {{ calculateRemainingTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
+                <span>{{booking.charger_info.charging_status == 'Not Charging' ? '~': "⚡" + booking.charger_info.charging_status + "%"}}</span>
+              </div>
+              <progress v-if="booking.charger_info.charging_status != 'Not Charging'" class="progress h-3 progress-accent w-100" :value="booking.charger_info.charging_status" max="100"></progress>
+              <progress v-else class="progress h-3 w-100" max="100"></progress>
+              <div class="flex justify-between align-middle">
+                <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
+              </div>
+              <span class="text-slate-400">{{booking.charger_info.charger_location}}</span>
+              <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
+              <div class="card-actions mt-5">
+                <button class="btn btn-primary btn-outline w-full" @click="endBooking(booking.booking_id)">END CHARGING</button>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-if="getBookingStatus(booking.booking_datetime, booking.booking_duration_hours)=='Completed'" class="card bg-base-100">
-          <figure>
-            <img :src="'http://localhost:5001/charging-station/images/' + booking.charger_info.charger_image" />
-          </figure>
-          <div class="card-body">
-            <div class="flex justify-between items-baseline">
-              <span class="text-slate-400 text-xs">COMPLETED</span>
-            </div>
-            <progress class="progress h-3 w-100" value="100" max="100"></progress>
-            <div class="flex justify-between align-middle">
-              <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
-            </div>
-            <span class="text-slate-400">{{booking.charger_info.charger_location}}</span>
-            <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
-            <div class="card-actions mt-5">
-              <button class="btn btn-accent w-full" @click="cancelBooking(booking.booking_id)">BOOK AGAIN</button>
+        </template>
+      </div>  
+      <div class="stat mt-10">
+        <div class="stat-title">MY BOOKINGS</div>
+        <div class="stat-value text-primary">UPCOMING</div>
+        <!-- <div class="stat-desc text-secondary">↗︎ 40 (2%)</div> -->
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 px-5">
+
+        <template v-for="booking in sortedBookings" :key="booking.booking_id">
+          <div v-if="getBookingStatus(booking.booking_datetime, booking.booking_duration_hours)=='Upcoming' && booking.booking_status=='IN_PROGRESS'" class="card bg-base-100">
+            <figure>
+              <img :src="'http://localhost:5001/charging-station/images/' + booking.charger_info.charger_image" />
+            </figure>
+            <div class="card-body">
+              <div class="flex justify-between items-baseline">
+                <span class="text-slate-400 text-xs">{{ calculateToBookingTime(booking.booking_datetime) }}</span>
+                <span>~</span>
+              </div>
+              <progress class="progress h-3 w-100" max="100"></progress>
+              <div class="flex justify-between align-middle">
+                <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
+              </div>
+              <span class="text-slate-400">{{booking.charger_info.charger_location}}</span>
+              <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
+              <div class="card-actions mt-5">
+                <button class="btn btn-primary btn-outline w-full" @click="cancelBooking(booking.booking_id)">CANCEL BOOKING</button>
+              </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
+      </div>
+      <div class="stat mt-10">
+        <div class="stat-title">MY BOOKINGS</div>
+        <div class="stat-value text-neutral-content">COMPLETED</div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 px-5">
+        <template v-for="booking in sortedBookings" :key="booking.booking_id">
+          <div v-if="booking.booking_status=='COMPLETED'" class="card bg-base-100">
+            <figure>
+              <img :src="'http://localhost:5001/charging-station/images/' + booking.charger_info.charger_image" />
+            </figure>
+            <div class="card-body">
+              <div class="flex justify-between items-baseline">
+                <span class="text-slate-400 text-xs">COMPLETED</span>
+              </div>
+              <progress class="progress h-3 w-100" value="100" max="100"></progress>
+              <div class="flex justify-between align-middle">
+                <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
+              </div>
+              <span class="text-slate-400">{{booking.charger_info.charger_location}}</span>
+              <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
+              <div class="card-actions mt-5">
+                <button class="btn btn-accent w-full" @click="cancelBooking(booking.booking_id)">BOOK AGAIN</button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
     </div>
   </LayoutAuthenticated>
 </template>

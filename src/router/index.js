@@ -96,6 +96,22 @@ const routes = [
   },
   {
     meta: {
+      title: 'logout',
+    },
+    path: '/logout',
+    name: 'logout',
+    component: () => import('@/views/logout.vue'),
+  },
+  // {
+  //   meta: {
+  //     title: 'profile',
+  //   },
+  //   path: '/info',
+  //   name: 'info',
+  //   component: () => import('@/views/profilePageView.vue'),
+  // },
+  {
+    meta: {
       title: 'Error',
     },
     path: '/error',

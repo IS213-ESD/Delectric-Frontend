@@ -2,16 +2,19 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import axios from 'axios'
 
+
+const BASE_URL = 'http://localhost:5101/booking-complex';
+
 export const useBookingStore = defineStore('booking', () => {
   // Chargers in the area
   const bookingList = ref([])
 
-  async function fetchAllBookingsUser() {
+  async function fetchAllBookingsUser(userId) {
     try {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://localhost:5011/booking-complex/user/1`,
+        url: `${BASE_URL}/user/${userId}`,
       };
       const response = await axios(config);
       const userBookings = response?.data;
@@ -25,7 +28,7 @@ export const useBookingStore = defineStore('booking', () => {
     try {
       const config = {
         method: 'post',
-        url: 'http://localhost:5011/booking-complex/endbooking',
+        url: `${BASE_URL}/endbooking`,
         data: {
           booking_id: bookingId,
           user_id: userId
@@ -43,7 +46,7 @@ export const useBookingStore = defineStore('booking', () => {
     try {
       const config = {
         method: 'post',
-        url: 'http://localhost:5011/booking-complex/cancelbooking',
+        url: `${BASE_URL}/cancelbooking`,
         data: {
           booking_id: bookingId,
           user_id: userId
