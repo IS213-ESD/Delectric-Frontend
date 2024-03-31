@@ -80,6 +80,22 @@ const routes = [
   },
   {
     meta: {
+      title: 'Register',
+    },
+    path: '/register',
+    name: 'register',
+    component: () => import('@/views/RegisterView.vue'),
+  },
+  {
+    meta: {
+      title: 'card',
+    },
+    path: '/card',
+    name: 'card',
+    component: () => import('@/views/cardView.vue'),
+  },
+  {
+    meta: {
       title: 'Error',
     },
     path: '/error',

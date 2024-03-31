@@ -45,7 +45,7 @@
     function formatEndTime(dateTimeString, duration) {
       const dateTime = new Date(dateTimeString)
       dateTime.setHours(dateTime.getHours() + duration)
-      return `${padZero(dateTime.getHours())}:${padZero(dateTime.getMinutes())}`
+      return `${dateTime.toLocaleDateString()} ${padZero(dateTime.getHours())}:${padZero(dateTime.getMinutes())}`
     }
     // Helper function to pad single digits with leading zeros
     function padZero(num) {
@@ -60,7 +60,6 @@
 
       const remainingTimeMilliseconds = bookingTime - currentTime;
       const remainingMinutes = Math.ceil(remainingTimeMilliseconds / (1000 * 60));
-      console.log(remainingMinutes)
       if (remainingMinutes >= 24 * 60) {
         const remainingDays = Math.floor(remainingMinutes / (24 * 60));
         return `${remainingDays} day${remainingDays !== 1 ? 's' : ''}`;
@@ -79,7 +78,6 @@
 
       const remainingTimeMilliseconds = bookingTime - currentTime;
       const remainingMinutes = Math.ceil(remainingTimeMilliseconds / (1000 * 60));
-      console.log(remainingMinutes)
       if (remainingMinutes >= 24 * 60) {
         const remainingDays = Math.floor(remainingMinutes / (24 * 60));
         return `${remainingDays} day${remainingDays !== 1 ? 's' : ''} to booking`;
@@ -168,6 +166,25 @@
             <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
             <div class="card-actions mt-5">
               <button class="btn btn-primary btn-outline w-full" @click="cancelBooking(booking.booking_id)">CANCEL BOOKING</button>
+            </div>
+          </div>
+        </div>
+        <div v-if="getBookingStatus(booking.booking_datetime, booking.booking_duration_hours)=='Completed'" class="card bg-base-100">
+          <figure>
+            <img :src="'http://localhost:5001/charging-station/images/' + booking.charger_info.charger_image" />
+          </figure>
+          <div class="card-body">
+            <div class="flex justify-between items-baseline">
+              <span class="text-slate-400 text-xs">COMPLETED</span>
+            </div>
+            <progress class="progress h-3 w-100" value="100" max="100"></progress>
+            <div class="flex justify-between align-middle">
+              <h2 class="card-title">{{booking.charger_info.charger_name}}</h2>
+            </div>
+            <span class="text-slate-400">{{booking.charger_info.charger_location}}</span>
+            <span class="text-slate-400">Booked From: {{ formatDate(booking.booking_datetime) }}-{{ formatEndTime(booking.booking_datetime, booking.booking_duration_hours) }}</span>
+            <div class="card-actions mt-5">
+              <button class="btn btn-accent w-full" @click="cancelBooking(booking.booking_id)">BOOK AGAIN</button>
             </div>
           </div>
         </div>

@@ -11,24 +11,46 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import LayoutGuest from '@/layouts/LayoutGuest.vue'
 
-const form = reactive({
-  login: 'john.doe',
-  pass: 'highly-secure-password-fYjUw-',
-  remember: true
+import { ref } from 'vue'
+import { useLoginStore } from '@/stores/login'
+import { useSignupStore } from '@/stores/signup'
+
+const form = ref({
+  login: '',
+  pass: '',
+  remember: false,
+  verificationError: null
 })
 
+const loginStore = useLoginStore()
+const signupStore = useSignupStore()
 const router = useRouter()
 
-const submit = () => {
-  router.push('/dashboard')
+const submit = async () => {
+  try {
+    // console.log(form.value.login, form.value.pass)
+    await loginStore.login({
+      "username": form.value.login,
+      "password": form.value.pass
+    })
+    
+    if (loginStore.profileCompleted != null && loginStore.profileCompleted != false ){
+      router.push('/dashboard')
+    }else{
+      router.push('/card')
+    }
+  } catch (error) {
+    // console.error('Login failed:', error)
+    form.value.verificationError = "Invalid email or password"
+  }
 }
-</script>
 
+</script>
 <template>
   <LayoutGuest>
     <SectionFullScreen v-slot="{ cardClass }" bg="purplePink">
       <CardBox :class="cardClass" is-form @submit.prevent="submit">
-        <FormField label="Login" help="Please enter your login">
+        <FormField label="Login" help="Please enter your email">
           <FormControl
             v-model="form.login"
             :icon="mdiAccount"
@@ -53,11 +75,12 @@ const submit = () => {
           label="Remember"
           :input-value="true"
         />
-
+        <p v-if="loginStore.error" class="text-red-500 mt-5">{{ loginStore.error }}</p>
+        <p v-if="form.verificationError != null" class="text-red-500 mt-5">{{ form.verificationError }}</p>
         <template #footer>
           <BaseButtons>
             <BaseButton type="submit" color="info" label="Login" />
-            <BaseButton to="/dashboard" color="info" outline label="Back" />
+            <BaseButton to="/register" color="info" outline label="No account?" />
           </BaseButtons>
         </template>
       </CardBox>
