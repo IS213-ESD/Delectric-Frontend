@@ -34,18 +34,14 @@ const authService = {
   },
   async getuserdetails(user_id) {
     try {
-      // Perform signup operation here
-      // Example: Call API to register new user
-      // If signup successful, return success message
       const response = await axios.get(`${BASE_URL}/getuserdetails/${user_id}`)
       return response.data
     } catch (error) {
-      // If signup fails, throw error
       error.message = error?.response?.data?.message
       throw error
     }
   },
-  async updateuserdetails({phone, username}) {
+  async updateuserdetails({phone, username, user_id}) {
     try {
       const response = await axios.post(`${BASE_URL}/userdetails`, {
         phone,

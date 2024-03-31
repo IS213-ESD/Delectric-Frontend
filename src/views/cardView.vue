@@ -62,6 +62,7 @@ const submitParticulars = async () => {
         "cvc": cardDetails.value.cvv
     });
     let payment_id = response?.payment_method_id;    
+    console.log(loginStore.userId)
     await authService.updateuserdetails({
         user_id: loginStore.userId,
         phone: personalDetails.value.phoneNumber,
