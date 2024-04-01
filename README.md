@@ -19,8 +19,8 @@ This repository contains a front-end vue EV charging station application.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/my-vue-app.git
-   cd delectric-charging-station
+   git clone https://github.com/IS213-ESD/Delectric-Frontend.git
+   cd delectric-frontend
    ```
 
 2. Install Dependencies:
