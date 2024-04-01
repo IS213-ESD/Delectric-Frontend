@@ -20,15 +20,11 @@ defineProps({
 
 const videoPlayer = ref(null);
 
-const playVideo = () => {
-  if (videoPlayer.value) {
-    videoPlayer.value.play();
-  }
-};
-
-onMounted(() => {
-  playVideo();
-});
+// const playVideo = () => {
+//   if (videoPlayer.value) {
+//     videoPlayer.value.play();
+//   }
+// };
 
 const handleAutoplay = () => {
   if (videoPlayer.value.paused) {
@@ -60,12 +56,12 @@ const routeView = () => {
       </div>
     </div>
     <!-- <img :src="carvid" class="w-full rounded-xl object-cover h-32" /> -->
-    <div @click="playVideo">
+    <div>
       <video
         ref="videoPlayer"
         class="w-full rounded-xl object-cover h-36"
         autoplay
-        @play="handleAutoplay"
+        muted
         @ended="restartVideo"
       >
         <source :src="carvid" type="video/mp4" />

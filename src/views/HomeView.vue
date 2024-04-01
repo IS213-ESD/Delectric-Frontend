@@ -128,7 +128,7 @@ const isFiltered = ref(false);
 const showClearFilterButton = ref(false);
 const router = useRouter();
 const isLoading = ref(false);
-const mapsLoading = ref(true); // Loading state
+const mapsLoading = ref(mainStore.mapsLoading);
 
 const fillChartData = () => {
   chartData.value = chartConfig.sampleChartData();
@@ -150,12 +150,19 @@ const initCenter = computed(() => {
   return mainStore.center;
 });
 
+// Watch for changes in mapsLoading
+watch(
+  () => mainStore.mapsLoading,
+  (newValue) => {
+    mapsLoading.value = newValue;
+  }
+);
+
 // Watch for changes to the center value
 watch(
   () => mainStore.center,
   async (newValue, oldValue) => {
     console.log('Center value changed:', newValue);
-    mapsLoading.value = false;
 
     centerValue.value = newValue; // Update the component state
     // Perform any other actions based on the new center value
@@ -223,8 +230,10 @@ const receiveNearbyStations = async () => {
       centerValue.value.lng,
       mainStore.storeLocation.radius
     );
+
     const data = chargersStore.chargerslist;
     console.log('receiveNearbyStations', data);
+
     listItems.value = [];
     if (data && Array.isArray(data)) {
       for (const item of data) {
@@ -249,7 +258,9 @@ const getAllStations = async () => {
     await chargersStore.fetchAllStations();
     const data = chargersStore.chargerslist;
     console.log('getAllStations', data);
+
     listItems.value = [];
+
     if (data && Array.isArray(data)) {
       for (const item of data) {
         listItems.value.push({

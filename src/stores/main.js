@@ -21,6 +21,7 @@ export const useMainStore = defineStore('main', () => {
   const bookingDate = ref('2024-03-08');
   const bookingTime = ref(null);
   const center = ref({ lat: 1, lng: 2 });
+  const mapsLoading = ref(true);
 
   const userAvatar = computed(
     () =>
@@ -48,6 +49,8 @@ export const useMainStore = defineStore('main', () => {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       };
+
+      mapsLoading.value = false;
 
       // console.log('Shawn is here', center.value);
 
@@ -126,5 +129,6 @@ export const useMainStore = defineStore('main', () => {
     bookingDate,
     bookingTime,
     center,
+    mapsLoading,
   };
 });
