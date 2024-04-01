@@ -9,6 +9,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import Charge from '@/assets/Charge.png';
 
 import { ref } from 'vue';
+import { TimeScale } from 'chart.js';
 
 defineProps({
   number: {
@@ -35,8 +36,18 @@ defineProps({
     type: String,
     default: null,
   },
+  TimeSlot: {
+    // For calendar
+    type: String,
+    default: null,
+  },
+  TimeSlotStatusColor: {
+    // For calendar
+    type: String,
+    default: null,
+  },
   distance: {
-    type: Number,
+    type: String,
     default: 0,
   },
   color: {
@@ -44,6 +55,10 @@ defineProps({
     default: null,
   },
   trend: {
+    type: String,
+    default: null,
+  },
+  status: {
     type: String,
     default: null,
   },
@@ -57,9 +72,9 @@ defineProps({
 </script>
 
 <template>
-  <CardBox class="cursor-pointer">
+  <CardBox class="cursor-pointer" :class="TimeSlotStatusColor">
     <BaseLevel v-if="trend" class="mb-3" mobile>
-      <PillTagTrend :trend="trend" :trend-type="trendType" small />
+      <PillTagTrend :trend="status" :trend-type="trendType" small />
       <!-- <BaseButton
         :icon="mdiCog"
         icon-w="w-4"
@@ -67,7 +82,6 @@ defineProps({
         color="lightDark"
         small
       /> -->
-      <img :src="Charge" class="w-8" />
     </BaseLevel>
     <BaseLevel mobile>
       <div class="max-w-full">
@@ -75,12 +89,13 @@ defineProps({
           {{ label }}
         </h1>
         <div class="flex flex-row gap-2 overflow-hidden">
-          <h1 class="w-2/5 text-lg leading-tight text-slate-400">
-            {{ distance }} km
+          <h1 class="text-lg leading-tight">
+            {{ distance }}
+            {{ TimeSlot }}
 
             <!-- <NumberDynamic :value="number" :prefix="prefix" :suffix="suffix" /> -->
           </h1>
-          <p>•</p>
+
           <h1
             class="text-ellipsis overflow-hidden text-lg leading-tight text-slate-400 truncate"
           >
@@ -88,14 +103,9 @@ defineProps({
           </h1>
         </div>
       </div>
-      <!-- <BaseIcon
-        v-if="icon"
-        :path="icon"
-        size="48"
-        w=""
-        h="h-16"
-        :class="color"
-      /> -->
+      <div class="flex">
+        <img :src="Charge" class="w-8" />
+      </div>
     </BaseLevel>
   </CardBox>
 </template>

@@ -32,7 +32,10 @@
         />
       </SectionTitleLineWithButton>
 
-      <FilterDrawer @is-filtered="receiveIsFiltered"></FilterDrawer>
+      <FilterDrawer
+        @is-filtered="receiveIsFiltered"
+        @no-filter="receiveNearbyStations"
+      ></FilterDrawer>
 
       <div>
         <!-- Toggle button -->
@@ -57,36 +60,26 @@
             <CardBoxWidget
               v-for="item in listItems"
               :key="item.id"
-              trend="12%"
+              :trend="item.status"
               trend-type="up"
               color="text-emerald-500"
               :icon="mdiAccountMultiple"
-              :distance="item.distance"
+              :distance="item.distance + 'km'"
               :label="item.name"
               :street="item.street"
               @click="logValues(item)"
+              class="bg-slate-900 text-slate-200"
             />
           </div>
         </div>
       </div>
 
-      <!-- <CustomDrawer
-        :drawer-id="1"
-        :page-name="hello"
-        :drawer-title="cardContent[0].name"
-        :drawer-subtitle="cardContent[0].street"
-        :button-true="
-          isFiltered ? 'Book Slot' : 'Please filter before selecting'
-        "
-        @book-slot="handleBookSlot"
-        :disabled="isFiltered"
-      >
-      </CustomDrawer> -->
       <CustomDrawer
         :drawer-id="1"
         :drawer-title="cardContent[0].name"
         :drawer-subtitle="cardContent[0].street"
         :button-true="buttonText"
+        button-false="Explore Booking Slots"
         @book-slot="handleBookSlot"
         :disabled="isFiltered"
       >
@@ -151,46 +144,112 @@ const receiveMarkerAdresss = (data) => {
 // Function to update store location
 const updateStoreLocation = async (latitude, longitude) => {
   await mainStore.updateStoreLocation(latitude, longitude);
-  // console.log(mainStore.storeLocation.value); // Access the value property of storeLocation
 };
 
-const receiveIsFiltered = async (data) => {
-  console.log('receiveisfiltered', mainStore.storeLocation);
-  await chargersStore
-    .fetchNearbyStations(
-      mainStore.storeLocation.latitude,
-      mainStore.storeLocation.longitude,
-      mainStore.storeLocation.radius,
-      mainStore.storeLocation.currentTimeString,
-      mainStore.storeLocation.hrs,
-      mainStore.storeLocation.date
-    )
-    .then(() => {
-      let data = chargersStore.chargerslist;
-      console.log(data)
-      listItems.value = [];
-      if (data && Array.isArray(data)) {
-        for (const item of data) {
-          listItems.value.push({
-            id: item.charger_id,
-            name: item.charger_name,
-            street: item.charger_location,
-            distance: item.distance,
-          });
-        }
-      } else {
-        console.error('chargerslist is empty or not an array');
-      }
-    });
+const centerValue = ref(mainStore.center); // Reactive variable to hold the center value
 
+const initCenter = computed(() => {
+  // console.log('Computed property: initCenter', mainStore.center);
+  return mainStore.center;
+});
+
+// Watch for changes to the center value
+watch(
+  () => mainStore.center,
+  async (newValue, oldValue) => {
+    console.log('Center value changed:', newValue);
+    centerValue.value = newValue; // Update the component state
+    // Perform any other actions based on the new center value
+    await receiveNearbyStations(); // Call receiveNearbyStations after the center value is updated
+  }
+);
+
+const receiveIsFiltered = async (data) => {
+  // Watch for changes in mainStore.storeLocation and call receiveIsFiltered when it changes
+  watch(
+    () => mainStore.storeLocation,
+    async () => {
+      // Make the callback function asynchronous
+      console.log(mainStore.storeLocation.bookingTime);
+      console.log(mainStore.storeLocation.bookingDate);
+      console.log(mainStore.storeLocation.radius);
+      console.log(mainStore.bookingDuration);
+
+      try {
+        // Call fetchNearbyAvailStations with the updated storeLocation and await its completion
+        await chargersStore.fetchNearbyAvailStations(
+          mainStore.storeLocation.latitude,
+          mainStore.storeLocation.longitude,
+          mainStore.storeLocation.radius,
+          mainStore.storeLocation.bookingTime,
+          mainStore.bookingDuration,
+          mainStore.storeLocation.bookingDate
+        );
+
+        // Once the data is fetched, update listItems
+        let data = chargersStore.chargerslist;
+        console.log('receiveIsFiltered', data);
+        listItems.value = [];
+        if (data && Array.isArray(data)) {
+          for (const item of data) {
+            listItems.value.push({
+              id: item.charger_id,
+              name: item.charger_name,
+              street: item.charger_location,
+              distance: item.distance,
+            });
+          }
+        } else {
+          console.error('chargerslist is empty or not an array');
+        }
+      } catch (error) {
+        console.error('Error fetching nearby stations:', error);
+        // Handle error gracefully, e.g., show a message to the user
+      }
+    }
+  );
   isFiltered.value = data;
+};
+
+const receiveNearbyStations = async () => {
+  isFiltered.value = false;
+
+  if (!centerValue.value) {
+    // If centerValue is not yet initialized, wait for it to be initialized
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
+  try {
+    await chargersStore.fetchNearbyStations(
+      centerValue.value.lat,
+      centerValue.value.lng,
+      mainStore.storeLocation.radius
+    );
+    const data = chargersStore.chargerslist;
+    console.log('receiveNearbyStations', data);
+    listItems.value = [];
+    if (data && Array.isArray(data)) {
+      for (const item of data) {
+        listItems.value.push({
+          id: item.charger_id,
+          name: item.charger_name,
+          street: item.charger_location,
+          distance: item.distance,
+        });
+      }
+    } else {
+      console.error('chargerslist is empty or not an array');
+    }
+  } catch (error) {
+    console.error('Error receiving nearby stations:', error);
+    // Handle error gracefully, e.g., show a message to the user
+  }
 };
 
 const getAllStations = async () => {
   try {
     await chargersStore.fetchAllStations();
     const data = chargersStore.chargerslist;
-    console.log('data', data);
+    console.log('getAllStations', data);
     listItems.value = [];
     if (data && Array.isArray(data)) {
       for (const item of data) {
@@ -218,7 +277,7 @@ const buttonText = computed(() => {
 });
 
 const handleBookSlot = (data) => {
-  console.log(isFiltered.value);
+  // console.log(isFiltered.value);
   if (isFiltered.value === false) {
     toggleView();
   }
@@ -240,8 +299,8 @@ onMounted(() => {
   fillChartData();
   // addSampleItems();
   getAllStations();
-  console.log('loaded');
   updateStoreLocation();
+  receiveNearbyStations();
 });
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
@@ -254,25 +313,13 @@ const toggleView = () => {
   mapView.value = !mapView.value;
 };
 
-const addSampleItems = () => {
-  listItems.value.push(
-    {
-      id: 1,
-      name: 'NAFA Campus 1',
-      street: '21 Tampines Avenue 1, Singapore 599242',
-      distance: 0.55,
-    },
-    { id: 2, name: 'Odeon Towers', street: 'ljfnvjnv', distance: 0.44 },
-    { id: 3, name: 'Fortune Centre', street: 'ljfnvjnv', distance: 0.35 }
-  );
-};
-
 const cardContent = ref([
   { id: 1, name: 'NAFA Campus 1', street: 'ljfnvjnv', distance: 0.55 },
 ]);
 
 const logValues = (item) => {
   console.log('Clicked Item:', item.name);
+
   cardContent.value = [];
   cardContent.value.push({
     id: item.id,
@@ -282,9 +329,5 @@ const logValues = (item) => {
   });
   console.log(cardContent);
   toggleDrawer('1');
-};
-
-const onDrawerClose = () => {
-  toggleDrawer(this.drawerId);
 };
 </script>

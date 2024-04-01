@@ -12,6 +12,11 @@
         :position="center"
         icon="https://maps.google.com/mapfiles/kml/pal2/icon31.png"
       />
+      <GMapCircle
+        :center="center"
+        :radius="circleRadius"
+        :options="circleOptions"
+      />
 
       <!-- Display multiple markers -->
       <GMapMarker
@@ -22,12 +27,25 @@
         @click="selectMarker(marker)"
       />
     </GMapMap>
+    <CustomDrawer
+      :drawer-id="1"
+      :drawer-title="cardContent[0].name"
+      :drawer-subtitle="cardContent[0].street"
+      :button-true="buttonText"
+      @book-slot="handleBookSlot"
+      :disabled="isFiltered"
+    >
+    </CustomDrawer>
   </div>
 </template>
 
 <script>
 import { useMainStore } from '@/stores/main';
 import { useChargersStore } from '@/stores/chargers';
+import currentLocationImage from '@/assets/currentLocation.png';
+import CustomDrawer from '@/components/Drawer/CustomDrawer.vue';
+import { toggleDrawer } from '@/helpers/common';
+
 import { computed, ref, onMounted, watch } from 'vue';
 
 export default {
@@ -80,41 +98,37 @@ export default {
   },
   data() {
     return {
-      center: { lat: 1.2963, lng: 103.8502 }, // Initialize with a default coordinate
+      // center: { lat: 1.0963, lng: 103.8502 }, // Initialize with a default coordinate
       zoom: 16,
       markers: [],
       disableDefaultUI: true,
       gestureHandling: 'greedy',
-
+      circleRadius: 100, // Set radius of the circle in meters
+      currentLocationImage: null,
+      center: { lat: null, lng: null },
+      circleOptions: {
+        strokeColor: 'blue',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: 'blue',
+        fillOpacity: 0.35,
+      },
+      adress: null,
       mapStyle: {
         width: '100%',
         height: '400px',
         backgroundColor: '#f5f5f5', // Set background color
         borderRadius: '20px', // Add border radius
       },
+
+      cardContent: [{ id: 1, name: 'Drawer Title', street: 'Drawer Subtitle' }],
+      buttonText: 'Button Text',
+      isFiltered: false,
     };
   },
 
   mounted() {
-    // Get current location using Geolocation API
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        // Set the center to the user's current location
-        this.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-
-        this.updateStoreLocation(this.center.lat, this.center.lng);
-
-        // Add multiple markers around the current location
-        this.getAllStations();
-        // this.addMarkersAroundCurrentLocation();
-      },
-      (error) => {
-        console.error('Error getting current location:', error);
-      }
-    );
+    this.getAllStations();
   },
   computed: {
     mainStore() {
@@ -123,36 +137,35 @@ export default {
     chargersStore() {
       return useChargersStore();
     },
+    center() {
+      console.log('init center', this.mainStore.center);
+      return this.mainStore.center;
+    },
+  },
+  created() {
+    this.mainStore = useMainStore();
+    this.center = {
+      lat: this.mainStore.latitude,
+      lng: this.mainStore.longitude,
+    };
+    this.currentLocationImage = currentLocationImage;
   },
   methods: {
+    handleBookSlot() {
+      // Your method logic here
+    },
     updateStoreLocation(latitude, longitude) {
       // const mainStore = useMainStore();
       this.mainStore.updateStoreLocation(latitude, longitude);
     },
-    async reverseGeocode(lat, lng) {
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyA-R-V5D-Di4Y4NcmW-DFt0Aez9AOxj5X0`
-        );
-        const data = await response.json();
-        if (data.status === 'OK' && data.results.length > 0) {
-          const address = data.results[0].formatted_address;
-          return address;
-        } else {
-          return 'Address not found';
-        }
-      } catch (error) {
-        console.error('Error fetching address:', error);
-        return 'Error fetching address';
-      }
-    },
+
     async handleMarkerClick(marker) {
       const lat = marker.position.lat;
       const lng = marker.position.lng;
-      const address = await this.reverseGeocode(lat, lng);
       // Display the address in a tooltip or info window
+      const address = null;
       marker.tooltip = address;
-      console.log(address);
+      console.log(marker);
       this.$emit('marker-address', address);
     },
     async getAllStations() {
@@ -168,9 +181,13 @@ export default {
     addMarkersAroundCurrentLocation(data) {
       // Generate random positions around the current location for demonstration
       for (let i = 0; i < data.length; i++) {
+        console.log(data);
         const lat = data[i].latitude;
         const lng = data[i].longitude;
         const marker = {
+          id: data[i].charger_id,
+          location: data[i].charger_location,
+          name: data[i].charger_name,
           position: { lat, lng },
           tooltip: '',
         };
@@ -181,7 +198,22 @@ export default {
     selectMarker(marker) {
       // Handle marker click event
       console.log('Marker clicked:', marker);
-      this.handleMarkerClick(marker);
+      this.logValues(marker);
+
+      // this.handleMarkerClick(marker);
+    },
+    logValues(item) {
+      console.log('Clicked Item:', item.name);
+      console.log('Clicked Item:', item);
+      this.cardContent.value = [];
+      this.cardContent.value.push({
+        id: item.id,
+        name: item.name,
+        street: item.street,
+        distance: 0.55,
+      });
+      console.log('cardContent', this.cardContent);
+      toggleDrawer('1');
     },
   },
 };

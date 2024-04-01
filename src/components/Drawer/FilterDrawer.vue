@@ -13,16 +13,17 @@
       <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
         <!-- Sidebar content here -->
         <li class="mt-24">
-          <h2>Pick a date</h2>
+          <h2>Pick a Date and Time</h2>
           <VueDatePicker
             v-model="date"
             :model-value="date"
             @update:model-value="handleDate"
             dark
             :is-24="false"
-            placeholder="Select Date"
-            minutes-increment="15"
+            placeholder="Select Date & Time"
+            minutes-increment="30"
             :start-time="startTime"
+            time-picker-inline
           />
         </li>
         <li>
@@ -42,11 +43,10 @@
             <option>8</option>
           </select>
         </li>
-        <div>
-          <p v-if="showClearFilterButton">Date Selected: {{ date }}</p>
-          <p v-if="showClearFilterButton">
-            Duration of Booking: {{ hoursBooked }}
-          </p>
+        <div class="m-2" v-if="showClearFilterButton">
+          <p>Date Selected: {{ mainStore.bookingDate }}</p>
+          <p>Time: {{ mainStore.bookingTime }}</p>
+          <p>Duration of Booking: {{ hoursBooked }}</p>
         </div>
 
         <button
@@ -83,7 +83,7 @@ export default {
     return {
       hoursBooked: null,
       showClearFilterButton: false,
-      date: new Date(),
+      date: null,
       startTime: { hours: new Date().getHours() + 1, minutes: 0 },
     };
   },
@@ -103,8 +103,7 @@ export default {
     },
     filterOptions() {
       // Access the value of hoursBooked
-      console.log('Selected hours booked:', this.hoursBooked);
-      console.log('Date and Time selected:', this.date);
+
       this.showClearFilterButton = true;
       console.log(this.showClearFilterButton);
       const valuee = this.showClearFilterButton;
@@ -118,7 +117,8 @@ export default {
     },
     clearFilter() {
       this.showClearFilterButton = false;
-      this.$emit('is-filtered', this.showClearFilterButton);
+      this.$emit('no-filter', this.showClearFilterButton);
+      console.log(this.showClearFilterButton);
     },
   },
 };
