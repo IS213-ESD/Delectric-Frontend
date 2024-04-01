@@ -2,12 +2,10 @@
 
 This repository contains a front-end vue EV charging station application.
 
-## Tailwind 3.x Vue 3.x with Vite or Nuxt or Laravel
+## Tailwind 3.x Vue 3.x with Vite
 
 - Built with **Vue.js 3**, **Tailwind CSS 3** framework & **Composition API**
 - **Vite** under the hood &mdash; [Info](https://vitejs.dev)
-- **Nuxt 3** integration available &mdash; [Info](#nuxt-3-integration)
-- **Laravel Breeze Inertia Vue** integration available &mdash; [Info](#laravel-9x-integration)
 - **SFC** `<script setup>` &mdash; [Info](https://v3.vuejs.org/api/sfc-script-setup.html)
 - **Pinia** state library (official Vuex 5) &mdash; [Info](https://pinia.vuejs.org/)
 - Reusable components
