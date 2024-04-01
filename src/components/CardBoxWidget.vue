@@ -82,7 +82,6 @@ defineProps({
         color="lightDark"
         small
       /> -->
-      <img :src="Charge" class="w-8" />
     </BaseLevel>
     <BaseLevel mobile>
       <div class="max-w-full">
@@ -96,7 +95,7 @@ defineProps({
 
             <!-- <NumberDynamic :value="number" :prefix="prefix" :suffix="suffix" /> -->
           </h1>
-          <p></p>
+
           <h1
             class="text-ellipsis overflow-hidden text-lg leading-tight text-slate-400 truncate"
           >
@@ -104,14 +103,9 @@ defineProps({
           </h1>
         </div>
       </div>
-      <!-- <BaseIcon
-        v-if="icon"
-        :path="icon"
-        size="48"
-        w=""
-        h="h-16"
-        :class="color"
-      /> -->
+      <div class="flex">
+        <img :src="Charge" class="w-8" />
+      </div>
     </BaseLevel>
   </CardBox>
 </template>

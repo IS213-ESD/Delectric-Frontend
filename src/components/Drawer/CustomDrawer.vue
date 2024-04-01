@@ -61,33 +61,44 @@
         <!-- <form method="dialog"></form> -->
 
         <div class="hello overflow-auto pb-32">
-          <div class="mb-12 mt-6">
-            <div>
-              <h3 class="font-bold text-lg text-black">{{ drawerTitle }}</h3>
+          <h1 class="text-xl font-bold">Charger</h1>
+          <div class="mb-12 mt-6 flex">
+            <div class="flex-1 bg-slate-100 rounded-xl p-4">
+              <img :src="Cutecar" />
+            </div>
+            <div class="flex-1 p-4">
+              <h3 class="font-bold text-2xl text-black">{{ drawerTitle }}</h3>
               <p class="text-md text-black">{{ drawerSubtitle }}</p>
             </div>
           </div>
-          <VueDatePicker
-            v-model="date"
-            :enable-time-picker="false"
-            :model-value="date"
-            @update:model-value="handleDate"
-            dark
-            :is-24="false"
-            placeholder="Select Date & Time"
-          ></VueDatePicker>
 
-          <div class="mt-8" v-if="!hideCardBoxWidget">
-            <CardBoxWidget
-              v-for="item in listItems"
-              :key="item.id"
-              trend-type="up"
-              :TimeSlotStatusColor="item.color"
-              :TimeSlot="item.timing"
-              :distance="null"
-              @click="onItemClick(item.id)"
-              class="mt-2 text-white"
-            />
+          <div v-if="!hideCardBoxWidget">
+            <p class="text-md text-slate-500 mb-2">
+              Select date to see available timeslots
+            </p>
+            <VueDatePicker
+              v-model="date"
+              :enable-time-picker="false"
+              :model-value="date"
+              @update:model-value="handleDate"
+              dark
+              :is-24="false"
+              placeholder="Select Date & Time"
+            ></VueDatePicker>
+
+            <div class="mt-8">
+              <p class="text-md text-slate-500">Click to select timeslots</p>
+              <CardBoxWidget
+                v-for="item in listItems"
+                :key="item.id"
+                trend-type="up"
+                :TimeSlotStatusColor="item.color"
+                :TimeSlot="item.timing"
+                :distance="null"
+                @click="onItemClick(item.id)"
+                class="mt-2 text-white"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -101,6 +112,7 @@ import { toggleDrawer } from '@/helpers/common';
 import CardBoxWidget from '@/components/CardBoxWidget.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { useBookingStore } from '@/stores/booking';
+import Cutecar from '@/assets/Cutecar.png';
 
 import { _ } from 'numeral';
 
@@ -121,6 +133,7 @@ export default {
       date: new Date(),
       bookings: [],
       createdBookings: [],
+      Cutecar: Cutecar, // Assign the imported image to a variable
     };
   },
   props: {
@@ -196,7 +209,19 @@ export default {
       // Return true if year, month, and day are equal, otherwise false
       return yearEqual && monthEqual && dayEqual;
     },
-
+    convertTo24Hour(timeString) {
+      let [hours, minutes] = timeString.split(/[^\d]/);
+      hours = parseInt(hours);
+      if (hours === 12 && timeString.toLowerCase().includes('am')) {
+        hours = 0;
+      } else if (timeString.toLowerCase().includes('pm')) {
+        hours += 12;
+      }
+      return `${hours.toString().padStart(2, '0')}:${minutes.padStart(
+        2,
+        '0'
+      )}:00`;
+    },
     getHoursBooked(dateString, duration) {
       const date = new Date(dateString);
       const hours = date.getUTCHours();
@@ -212,28 +237,31 @@ export default {
         console.log('Successfully retrieve all bookings in that charger', data);
         // filter to the specific date chosen
         this.bookings = [];
-        if (this.areDatesEqual(modelData, data[0].booking_datetime)) {
-          // match the dates
-          console.log(
-            'match',
-            data[0].booking_datetime,
-            data[0].booking_duration_hours
-          );
-          this.dayBookings.push(
-            this.getHoursBooked(
-              data[0].booking_datetime,
-              data[0].booking_duration_hours
-            )
-          );
-          console.log(this.dayBookings);
-          this.populateCalendar(this.dayBookings[0]);
-        } else {
-          this.populateCalendar(this.dayBookings);
+        for (const booking of data) {
+          if (this.areDatesEqual(modelData, booking.booking_datetime)) {
+            // match the dates
+            console.log(
+              'match',
+              booking.booking_datetime,
+              booking.booking_duration_hours
+            );
+            this.dayBookings.push(
+              this.getHoursBooked(
+                booking.booking_datetime,
+                booking.booking_duration_hours
+              )
+            );
+            console.log('unavailable dayBookings', this.dayBookings);
+            this.populateCalendar(this.dayBookings[0]);
+          } else {
+            this.populateCalendar(this.dayBookings);
+          }
         }
       } catch (error) {
         console.error('Error fetching stations:', error);
       }
     },
+
     populateCalendar(dayBookings) {
       // Define an array of suffixes for 12-hour format (am/pm)
       console.log('dayBookings', dayBookings);
@@ -255,13 +283,17 @@ export default {
 
         let status = dayBookings.includes(i) ? false : true;
 
+        let rawHour12 = this.convertTo24Hour(`${hour12}${suffix}`);
+
         // Create an object for the current hour
         let listItem = {
           id: i, // Set id to i instead of i + 1
-          timing: `${hour12}${suffix} • ${
+          timing: `${hour12} ${suffix} • ${
             status ? 'Available' : 'Unavailable for booking'
           }`, // Combine hour and suffix
           color: color, // Assign the determined color
+          rawTiming: rawHour12,
+          date: this.date,
           status: status,
         };
 
