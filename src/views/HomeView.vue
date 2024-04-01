@@ -145,11 +145,6 @@ const updateStoreLocation = async (latitude, longitude) => {
 
 const centerValue = ref(mainStore.center); // Reactive variable to hold the center value
 
-const initCenter = computed(() => {
-  // console.log('Computed property: initCenter', mainStore.center);
-  return mainStore.center;
-});
-
 // Watch for changes in mapsLoading
 watch(
   () => mainStore.mapsLoading,
@@ -253,20 +248,58 @@ const receiveNearbyStations = async () => {
   }
 };
 
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const earthRadiusKm = 6371;
+
+  function degreesToRadians(degrees) {
+    return (degrees * Math.PI) / 180;
+  }
+
+  const dLat = degreesToRadians(lat2 - lat1);
+  const dLon = degreesToRadians(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(degreesToRadians(lat1)) *
+      Math.cos(degreesToRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = earthRadiusKm * c;
+  return Number(distance.toFixed(2));
+}
+
+// Example usage
+const distance = calculateDistance(52.52, 13.405, 48.8566, 2.3522);
+console.log('Distance:', distance.toFixed(2), 'km');
+
 const getAllStations = async () => {
   try {
     await chargersStore.fetchAllStations();
     const data = chargersStore.chargerslist;
     console.log('getAllStations', data);
 
+    console.log('centerValue', centerValue.value.lat);
+    console.log('centerValue', centerValue.value.lat);
+
     listItems.value = [];
 
     if (data && Array.isArray(data)) {
       for (const item of data) {
+        const newDist = calculateDistance(
+          centerValue.value.lat,
+          centerValue.value.lng,
+          item.latitude,
+          item.longitude
+        );
+
         listItems.value.push({
           id: item.charger_id,
           name: item.charger_name,
           street: item.charger_location,
+          distance: newDist,
         });
       }
     } else {
