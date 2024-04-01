@@ -58,11 +58,4 @@ export default [
     href: 'https://github.com/IS213-ESD',
     target: '_blank',
   },
-
-  {
-    icon: mdiLogout,
-    label: 'Log out',
-    isDesktopNoLabel: true,
-    isLogout: true,
-  },
 ];

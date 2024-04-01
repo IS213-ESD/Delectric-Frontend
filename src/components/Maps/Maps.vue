@@ -6,17 +6,59 @@
       :style="mapStyle"
       :disableDefaultUI="disableDefaultUI"
       style="width: 100%; height: 700px"
+      :options="{
+        zoomControl: true,
+        mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        rotateControl: true,
+        fullscreenControl: false,
+        styles: [
+          {
+            featureType: 'landscape.natural',
+            elementType: 'geometry.fill',
+            stylers: [{ visibility: 'on' }, { color: '#e0efef' }],
+          },
+          {
+            featureType: 'poi',
+            elementType: 'geometry.fill',
+            stylers: [
+              { visibility: 'on' },
+              { hue: '#1900ff' },
+              { color: '#c0e8e8' },
+            ],
+          },
+          {
+            featureType: 'road',
+            elementType: 'geometry',
+            stylers: [{ lightness: 100 }, { visibility: 'simplified' }],
+          },
+          {
+            featureType: 'road',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }],
+          },
+          {
+            featureType: 'transit.line',
+            elementType: 'geometry',
+            stylers: [{ visibility: 'on' }, { lightness: 700 }],
+          },
+          {
+            featureType: 'water',
+            elementType: 'all',
+            stylers: [{ color: '#7dcdcd' }],
+          },
+        ],
+      }"
     >
       <!-- Display current location marker -->
       <GMapMarker
         :position="center"
-        :icon="currentLocationImage"
-        :iconSize="{ width: 2, height: 2 }"
-      />
-      <GMapCircle
-        :center="center"
-        :radius="circleRadius"
-        :options="circleOptions"
+        :icon="{
+          url: currentLocationImage,
+          scaledSize: { width: 77, height: 77 },
+          labelOrigin: { x: 16, y: 0 },
+        }"
       />
 
       <!-- Display multiple markers -->
@@ -26,6 +68,11 @@
         :position="marker.position"
         :clickable="true"
         @click="selectMarker(marker)"
+        :icon="{
+          url: chargerMarker,
+          scaledSize: { width: 50, height: 50 },
+          labelOrigin: { x: 16, y: 0 },
+        }"
       />
     </GMapMap>
     <CustomDrawer
@@ -44,6 +91,7 @@
 import { useMainStore } from '@/stores/main';
 import { useChargersStore } from '@/stores/chargers';
 import currentLocationImage from '@/assets/currentLocation.png';
+import chargerMarker from '@/assets/charger.png';
 import CustomDrawer from '@/components/Drawer/CustomDrawer.vue';
 import { toggleDrawer } from '@/helpers/common';
 
@@ -54,6 +102,7 @@ export default {
   components: {
     CustomDrawer,
     currentLocationImage,
+    chargerMarker,
   },
   props: {
     MarkerAddress: {
@@ -104,20 +153,15 @@ export default {
   data() {
     return {
       // center: { lat: 1.0963, lng: 103.8502 }, // Initialize with a default coordinate
-      zoom: 16,
+      zoom: 14,
       markers: [],
       disableDefaultUI: true,
       gestureHandling: 'greedy',
       circleRadius: 100, // Set radius of the circle in meters
       currentLocationImage: null,
+      chargerMarker: null,
       center: { lat: null, lng: null },
-      circleOptions: {
-        strokeColor: 'blue',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: 'blue',
-        fillOpacity: 0.35,
-      },
+
       adress: null,
       mapStyle: {
         width: '100%',
@@ -164,6 +208,7 @@ export default {
       lng: this.mainStore.longitude,
     };
     this.currentLocationImage = currentLocationImage;
+    this.chargerMarker = chargerMarker;
   },
   methods: {
     handleBookSlot() {

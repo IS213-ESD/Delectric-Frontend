@@ -50,19 +50,6 @@ const routeView = () => {
 <template>
   <div role="alert" class="shadow-lg overflow-hidden p-0">
     <div class="absolute">
-      <!-- <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        class="stroke-info shrink-0 w-6 h-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        ></path>
-      </svg> -->
       <div class="absolute ml-8">
         <h1 class="mt-4 font-bold text-white text-2xl">{{ message }}</h1>
         <button @click="routeView" class="btn btn-sm mt-2">
@@ -76,7 +63,7 @@ const routeView = () => {
     <div @click="playVideo">
       <video
         ref="videoPlayer"
-        class="w-full rounded-xl object-cover h-32"
+        class="w-full rounded-xl object-cover h-36"
         autoplay
         @play="handleAutoplay"
         @ended="restartVideo"

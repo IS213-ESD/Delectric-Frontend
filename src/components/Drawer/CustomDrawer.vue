@@ -60,7 +60,7 @@
         </div>
         <!-- <form method="dialog"></form> -->
 
-        <div class="hello overflow-auto pb-32">
+        <div class="hello overflow-auto h-full pb-24">
           <h1 class="text-xl font-bold">Charger</h1>
           <div class="mb-12 mt-6 flex">
             <div class="flex-1 bg-slate-100 rounded-xl p-4">
@@ -70,6 +70,35 @@
               <h3 class="font-bold text-2xl text-black">{{ drawerTitle }}</h3>
               <p class="text-md text-black">{{ drawerSubtitle }}</p>
               <p class="text-md text-black">{{ distance }}</p>
+            </div>
+          </div>
+          <div
+            v-if="hideCardBoxWidget"
+            class="flex rounded-xl bg-teal-100 w-full h-1/3 items-center divide-x-2 divide-gray-400"
+          >
+            <div class="w-1/3 border-right">
+              <p class="rounded bg-teal-100 text-center font-bold text-xl">
+                Type 3
+              </p>
+              <p class="rounded bg-teal-100 text-center font-bold text-sky-900">
+                Connection
+              </p>
+            </div>
+            <div class="w-1/3">
+              <p class="rounded bg-teal-100 text-center font-bold text-xl">
+                $0.7
+              </p>
+              <p class="rounded bg-teal-100 text-center font-bold text-sky-900">
+                Per kwh
+              </p>
+            </div>
+            <div class="w-1/3">
+              <p class="rounded bg-teal-100 text-center font-bold text-xl">
+                $5
+              </p>
+              <p class="rounded bg-teal-100 text-center font-bold text-sky-900">
+                Parking Fee
+              </p>
             </div>
           </div>
 
