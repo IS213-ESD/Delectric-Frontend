@@ -36,11 +36,11 @@
         @is-filtered="receiveIsFiltered"
         @no-filter="receiveNearbyStations"
       ></FilterDrawer>
-
-      <div>
-        <!-- Toggle button -->
-        <!-- <button @click="toggleView">{{ mapView ? 'List View' : 'Map View' }}</button> -->
-
+      <div v-if="mapsLoading" class="text-center mx-auto">
+        <!-- Display loading spinner or message -->
+        <span class="loading loading-infinity loading-lg"></span>
+      </div>
+      <div v-else>
         <!-- Display map or list based on toggle state -->
         <div v-if="!mapView">
           <!-- Map View -->
@@ -53,9 +53,6 @@
         <div v-else>
           <!-- List View -->
           <!-- Your list component goes here -->
-          <!-- <ul>
-            <li v-for="item in listItems" :key="item.id">{{ item.name }}</li>
-          </ul> -->
           <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
             <CardBoxWidget
               v-for="item in listItems"
@@ -131,6 +128,7 @@ const isFiltered = ref(false);
 const showClearFilterButton = ref(false);
 const router = useRouter();
 const isLoading = ref(false);
+const mapsLoading = ref(true); // Loading state
 
 const fillChartData = () => {
   chartData.value = chartConfig.sampleChartData();
@@ -157,6 +155,8 @@ watch(
   () => mainStore.center,
   async (newValue, oldValue) => {
     console.log('Center value changed:', newValue);
+    mapsLoading.value = false;
+
     centerValue.value = newValue; // Update the component state
     // Perform any other actions based on the new center value
     await receiveNearbyStations(); // Call receiveNearbyStations after the center value is updated
