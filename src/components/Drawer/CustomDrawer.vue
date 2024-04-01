@@ -60,7 +60,7 @@
         </div>
         <!-- <form method="dialog"></form> -->
 
-        <div class="hello overflow-auto pb-24">
+        <div class="hello overflow-auto pb-32">
           <div class="mb-12 mt-6">
             <div>
               <h3 class="font-bold text-lg text-black">{{ drawerTitle }}</h3>
