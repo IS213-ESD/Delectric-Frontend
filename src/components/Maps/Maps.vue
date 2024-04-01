@@ -10,7 +10,8 @@
       <!-- Display current location marker -->
       <GMapMarker
         :position="center"
-        icon="https://maps.google.com/mapfiles/kml/pal2/icon31.png"
+        :icon="currentLocationImage"
+        :iconSize="{ width: 2, height: 2 }"
       />
       <GMapCircle
         :center="center"
@@ -28,10 +29,10 @@
       />
     </GMapMap>
     <CustomDrawer
-      :drawer-id="1"
-      :drawer-title="cardContent[0].name"
-      :drawer-subtitle="cardContent[0].street"
-      :button-true="buttonText"
+      :drawer-id="2"
+      :drawer-title="this.cardContent[0].name"
+      :drawer-subtitle="this.cardContent[0].street"
+      button-false="Explore Booking Slots"
       @book-slot="handleBookSlot"
       :disabled="isFiltered"
     >
@@ -50,6 +51,10 @@ import { computed, ref, onMounted, watch } from 'vue';
 
 export default {
   name: 'GoogleMaps',
+  components: {
+    CustomDrawer,
+    currentLocationImage,
+  },
   props: {
     MarkerAddress: {
       type: String,
@@ -121,9 +126,12 @@ export default {
         borderRadius: '20px', // Add border radius
       },
 
-      cardContent: [{ id: 1, name: 'Drawer Title', street: 'Drawer Subtitle' }],
+      cardContent: [
+        { id: 1, name: 'NAFA Campus 1', street: 'ljfnvjnv', distance: 0.55 },
+      ],
       buttonText: 'Button Text',
       isFiltered: false,
+      isLoading: false,
     };
   },
 
@@ -131,6 +139,13 @@ export default {
     this.getAllStations();
   },
   computed: {
+    buttonText() {
+      return this.isFiltered
+        ? this.isLoading
+          ? 'Loading...'
+          : 'Book Slot'
+        : 'Please filter before selecting';
+    },
     mainStore() {
       return useMainStore();
     },
@@ -186,7 +201,7 @@ export default {
         const lng = data[i].longitude;
         const marker = {
           id: data[i].charger_id,
-          location: data[i].charger_location,
+          street: data[i].charger_location,
           name: data[i].charger_name,
           position: { lat, lng },
           tooltip: '',
@@ -198,22 +213,22 @@ export default {
     selectMarker(marker) {
       // Handle marker click event
       console.log('Marker clicked:', marker);
-      this.logValues(marker);
+      this.logChildValues(marker);
 
       // this.handleMarkerClick(marker);
     },
-    logValues(item) {
+    logChildValues(item) {
       console.log('Clicked Item:', item.name);
       console.log('Clicked Item:', item);
-      this.cardContent.value = [];
-      this.cardContent.value.push({
+      this.cardContent = [];
+      this.cardContent.push({
         id: item.id,
         name: item.name,
         street: item.street,
         distance: 0.55,
       });
       console.log('cardContent', this.cardContent);
-      toggleDrawer('1');
+      toggleDrawer('2');
     },
   },
 };
@@ -221,4 +236,8 @@ export default {
 
 <style scoped>
 /* Add any custom styles here */
+.gmap-marker img {
+  width: 32px;
+  height: 32px;
+}
 </style>

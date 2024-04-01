@@ -1,9 +1,15 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import { useLoginStore } from '@/stores/login';
+
 import axios from 'axios';
 
 export const useMainStore = defineStore('main', () => {
-  const userName = ref('John Doe');
+  // const userName = ref('John evfevDoe');
+  const loginStore = useLoginStore(); // Define loginStore inside the store setup function
+
+  const userName = computed(() => loginStore.userDetails?.username);
+
   const userEmail = ref('doe.doe.doe@example.com');
   // const storeLocation = ref({}); // Initialize with default values
   const bookingFilter = ref({});

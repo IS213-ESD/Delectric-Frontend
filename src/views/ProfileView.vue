@@ -1,48 +1,54 @@
 <script setup>
-import { reactive, computed, ref } from 'vue'
-import { useMainStore } from '@/stores/main'
-import { useLoginStore } from '@/stores/login'
-import { mdiAccount, mdiMail, mdiAsterisk, mdiFormTextboxPassword, mdiGithub } from '@mdi/js'
-import SectionMain from '@/components/SectionMain.vue'
-import CardBox from '@/components/CardBox.vue'
-import BaseDivider from '@/components/BaseDivider.vue'
-import FormField from '@/components/FormField.vue'
-import FormControl from '@/components/FormControl.vue'
-import FormFilePicker from '@/components/FormFilePicker.vue'
-import BaseButton from '@/components/BaseButton.vue'
-import BaseButtons from '@/components/BaseButtons.vue'
-import UserCard from '@/components/UserCard.vue'
-import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue'
-import { useRouter } from 'vue-router'
+import { reactive, computed, ref } from 'vue';
+import { useMainStore } from '@/stores/main';
+import { useLoginStore } from '@/stores/login';
+import {
+  mdiAccount,
+  mdiMail,
+  mdiAsterisk,
+  mdiFormTextboxPassword,
+  mdiGithub,
+} from '@mdi/js';
+import SectionMain from '@/components/SectionMain.vue';
+import CardBox from '@/components/CardBox.vue';
+import BaseDivider from '@/components/BaseDivider.vue';
+import FormField from '@/components/FormField.vue';
+import FormControl from '@/components/FormControl.vue';
+import FormFilePicker from '@/components/FormFilePicker.vue';
+import BaseButton from '@/components/BaseButton.vue';
+import BaseButtons from '@/components/BaseButtons.vue';
+import UserCard from '@/components/UserCard.vue';
+import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue';
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue';
+import { useRouter } from 'vue-router';
 
-const mainStore = useMainStore()
-const loginStore = useLoginStore()
-const router = useRouter()
+const mainStore = useMainStore();
+const loginStore = useLoginStore();
+const router = useRouter();
 
-const userDetails = computed(() => loginStore.userDetails)
+const userDetails = computed(() => loginStore.userDetails);
 const profileForm = reactive({
-  name: userDetails?.username || "",
-  email: userDetails?.email || "",
-})
+  name: userDetails?.username || '',
+  email: userDetails?.email || '',
+});
 
 const passwordForm = reactive({
   password_current: '',
   password: '',
-  password_confirmation: ''
-})
+  password_confirmation: '',
+});
 
 const submitProfile = () => {
-  mainStore.setUser(profileForm)
-}
+  mainStore.setUser(profileForm);
+};
 
 const submitPass = () => {
   //
-}
+};
 
-const logoutRedirect = ()=>{
+const logoutRedirect = () => {
   router.push('/login');
-}
+};
 </script>
 
 <template>
@@ -53,7 +59,7 @@ const logoutRedirect = ()=>{
 
       <UserCard class="mb-6" />
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1">
         <CardBox>
           <FormField label="E-mail">
             <FormControl
@@ -77,7 +83,12 @@ const logoutRedirect = ()=>{
           </FormField>
           <template #footer>
             <BaseButtons>
-              <BaseButton color="danger" label="LOGOUT" @click="logoutRedirect()" class="w-full"/>
+              <BaseButton
+                color="danger"
+                label="LOGOUT"
+                @click="logoutRedirect()"
+                class="w-full"
+              />
             </BaseButtons>
           </template>
         </CardBox>

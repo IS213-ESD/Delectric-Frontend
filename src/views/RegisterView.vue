@@ -1,38 +1,40 @@
 <script setup>
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { mdiAccount, mdiAsterisk } from '@mdi/js'
-import SectionFullScreen from '@/components/SectionFullScreen.vue'
-import CardBox from '@/components/CardBox.vue'
-import FormCheckRadio from '@/components/FormCheckRadio.vue'
-import FormField from '@/components/FormField.vue'
-import FormControl from '@/components/FormControl.vue'
-import BaseButton from '@/components/BaseButton.vue'
-import BaseButtons from '@/components/BaseButtons.vue'
-import LayoutGuest from '@/layouts/LayoutGuest.vue'
+import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { mdiAccount, mdiAsterisk } from '@mdi/js';
+import SectionFullScreen from '@/components/SectionFullScreen.vue';
+import CardBox from '@/components/CardBox.vue';
+import FormCheckRadio from '@/components/FormCheckRadio.vue';
+import FormField from '@/components/FormField.vue';
+import FormControl from '@/components/FormControl.vue';
+import BaseButton from '@/components/BaseButton.vue';
+import BaseButtons from '@/components/BaseButtons.vue';
+import LayoutGuest from '@/layouts/LayoutGuest.vue';
+import FooterBar from '@/components/FooterBar.vue';
 
-import { ref } from 'vue'
-import { useLoginStore } from '@/stores/login'
-import { useSignupStore } from '@/stores/signup'
+import { ref } from 'vue';
+import { useLoginStore } from '@/stores/login';
+import { useSignupStore } from '@/stores/signup';
 
 const form = ref({
   login: '',
   pass: '',
   confirmPass: '',
   remember: false,
-  verificationError: null
-})
+  verificationError: null,
+});
 
-const loginStore = useLoginStore()
-const signupStore = useSignupStore()
-const router = useRouter()
+const loginStore = useLoginStore();
+const signupStore = useSignupStore();
+const router = useRouter();
 
 function verifySignup(email, password, confirmPassword) {
   // Regular expression for email format validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   // Regular expression for password strength validation
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
   // Check if email format is valid
   if (!emailRegex.test(email)) {
@@ -54,34 +56,48 @@ function verifySignup(email, password, confirmPassword) {
 }
 
 const submit = async () => {
-    form.value.verificationError = verifySignup(form.value.login, form.value.pass, form.value.confirmPass)
+  form.value.verificationError = verifySignup(
+    form.value.login,
+    form.value.pass,
+    form.value.confirmPass
+  );
 
-    console.log(form)
-    if (!form.value.verificationError){
-        try {
-            // console.log(form.value.login, form.value.pass, form.value.confirmPass)
-            await signupStore.signup({
-            "username": form.value.login,
-            "password": form.value.pass,
-            })
-            await loginStore.login({
-                "username": form.value.login,
-                "password": form.value.pass,
-                })
-            router.push('/card')
-        } catch (error) {
-            // console.error('Login failed:', error)
-            form.value.verificationError = "Email already in use"
-        }
+  console.log(form);
+  if (!form.value.verificationError) {
+    try {
+      // console.log(form.value.login, form.value.pass, form.value.confirmPass)
+      await signupStore.signup({
+        username: form.value.login,
+        password: form.value.pass,
+      });
+      await loginStore.login({
+        username: form.value.login,
+        password: form.value.pass,
+      });
+      router.push('/card');
+    } catch (error) {
+      // console.error('Login failed:', error)
+      form.value.verificationError = 'Email already in use';
     }
-}
-
+  }
+};
 </script>
 <template>
   <LayoutGuest>
-    <SectionFullScreen v-slot="{ cardClass }" bg="purplePink">
-      <CardBox :class="cardClass" is-form @submit.prevent="submit">
-        <FormField label="Email" help="Please enter your email">
+    <SectionFullScreen v-slot="{ cardClass }" class="bg-slate-100 flex-col">
+      <FooterBar></FooterBar>
+
+      <CardBox
+        :class="cardClass"
+        class="bg-slate-900"
+        is-form
+        @submit.prevent="submit"
+      >
+        <FormField
+          label="Email"
+          help="Please enter your email"
+          class="text-slate-400"
+        >
           <FormControl
             v-model="form.login"
             :icon="mdiAccount"
@@ -90,7 +106,11 @@ const submit = async () => {
           />
         </FormField>
 
-        <FormField label="Password" help="Please enter your password">
+        <FormField
+          label="Password"
+          help="Please enter your password"
+          class="text-slate-400"
+        >
           <FormControl
             v-model="form.pass"
             :icon="mdiAsterisk"
@@ -100,7 +120,11 @@ const submit = async () => {
           />
         </FormField>
 
-        <FormField label="ConfirmPassword" help="Confirm your password">
+        <FormField
+          label="Confirm Password"
+          help="Confirm your password"
+          class="text-slate-400"
+        >
           <FormControl
             v-model="form.confirmPass"
             :icon="mdiAsterisk"
@@ -110,12 +134,21 @@ const submit = async () => {
           />
         </FormField>
 
-        <p v-if="loginStore.error" class="text-red-500 mt-5">{{ loginStore.error }}</p>
-        <p v-if="form.verificationError != null" class="text-red-500 mt-5">{{ form.verificationError }}</p>
+        <p v-if="loginStore.error" class="text-red-500 mt-5">
+          {{ loginStore.error }}
+        </p>
+        <p v-if="form.verificationError != null" class="text-red-500 mt-5">
+          {{ form.verificationError }}
+        </p>
         <template #footer>
           <BaseButtons>
             <BaseButton type="submit" color="info" label="Register" />
-            <BaseButton to="/login" color="info" outline label="Have an account" />
+            <BaseButton
+              to="/login"
+              color="info"
+              outline
+              label="Have an account"
+            />
           </BaseButtons>
         </template>
       </CardBox>

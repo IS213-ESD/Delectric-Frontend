@@ -69,6 +69,7 @@
             <div class="flex-1 p-4">
               <h3 class="font-bold text-2xl text-black">{{ drawerTitle }}</h3>
               <p class="text-md text-black">{{ drawerSubtitle }}</p>
+              <p class="text-md text-black">{{ distance }}</p>
             </div>
           </div>
 
@@ -154,6 +155,10 @@ export default {
       default: '',
     },
     drawerSubtitle: {
+      type: String,
+      default: '',
+    },
+    distance: {
       type: String,
       default: '',
     },

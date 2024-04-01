@@ -9,30 +9,31 @@ import FormControl from '@/components/FormControl.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import BaseButtons from '@/components/BaseButtons.vue';
 import LayoutGuest from '@/layouts/LayoutGuest.vue';
+import FooterBar from '@/components/FooterBar.vue';
 
-import paymentService from '@/services/paymentService'
-import authService from '@/services/authService'
-import { useLoginStore } from '@/stores/login'
+import paymentService from '@/services/paymentService';
+import authService from '@/services/authService';
+import { useLoginStore } from '@/stores/login';
 
-const loginStore = useLoginStore()
+const loginStore = useLoginStore();
 
 const personalDetails = ref({
   username: '',
-  phoneNumber: ''
+  phoneNumber: '',
 });
 
 const cardDetails = ref({
   cardNumber: '',
   expiryDate: {
     month: '',
-    year: ''
+    year: '',
   },
-  cvv: ''
+  cvv: '',
 });
 
 const form = ref({
-    verificationError: null
-})
+  verificationError: null,
+});
 
 const router = useRouter();
 
@@ -47,7 +48,11 @@ const submitParticulars = async () => {
       throw new Error('Please enter a valid Singaporean phone number');
     }
     // Validate card details
-    if (!cardDetails.value.cardNumber || !cardDetails.value.expiryDate || !cardDetails.value.cvv) {
+    if (
+      !cardDetails.value.cardNumber ||
+      !cardDetails.value.expiryDate ||
+      !cardDetails.value.cvv
+    ) {
       throw new Error('Please fill in all card details');
     }
 
@@ -56,26 +61,24 @@ const submitParticulars = async () => {
     console.log('Submitted personal details:', personalDetails.value);
     console.log('Submitted card details:', cardDetails.value);
     let response = await paymentService.addCard({
-        "number": cardDetails.value.cardNumber,
-        "exp_month": parseInt(cardDetails.value.expiryDate.month),
-        "exp_year": parseInt(cardDetails.value.expiryDate.year),
-        "cvc": cardDetails.value.cvv
+      number: cardDetails.value.cardNumber,
+      exp_month: parseInt(cardDetails.value.expiryDate.month),
+      exp_year: parseInt(cardDetails.value.expiryDate.year),
+      cvc: cardDetails.value.cvv,
     });
-    let payment_id = response?.payment_method_id;    
-    console.log(loginStore.userId)
+    let payment_id = response?.payment_method_id;
+    console.log(loginStore.userId);
     await authService.updateuserdetails({
-        user_id: loginStore.userId,
-        phone: personalDetails.value.phoneNumber,
-        username: personalDetails.value.username,
-        
-    })
+      user_id: loginStore.userId,
+      phone: personalDetails.value.phoneNumber,
+      username: personalDetails.value.username,
+    });
     await authService.updateuserpayment({
-        user_id: loginStore.userId,
-        token: payment_id,
-    })
+      user_id: loginStore.userId,
+      token: payment_id,
+    });
 
     router.push('/dashboard');
-
   } catch (error) {
     form.value.verificationError = error;
   }
@@ -83,89 +86,106 @@ const submitParticulars = async () => {
 </script>
 
 <template>
-    <LayoutGuest>
-      <SectionFullScreen v-slot="{ cardClass }" bg="purplePink">
-        <CardBox :class="cardClass" is-form @submit.prevent="submitParticulars">
-          <div class="flex justify-center mb-6">
-            <!-- <img src="/path/to/your/logo.png" alt="Logo" class="w-16 h-16" /> -->
-            <h1 class="text-xl font-bold mb-2 text-slate-400">Delectric.</h1>
+  <LayoutGuest>
+    <SectionFullScreen v-slot="{ cardClass }" class="bg-slate-900 flex-col">
+      <FooterBar class="text-white"></FooterBar>
+
+      <CardBox
+        :class="cardClass"
+        is-form
+        @submit.prevent="submitParticulars"
+        class="bg-slate-800"
+      >
+        <!-- Personal Details -->
+        <div class="mb-12">
+          <FormField
+            label="Username"
+            help="Please enter your username"
+            class="text-slate-400"
+          >
+            <FormControl
+              v-model="personalDetails.username"
+              :icon="mdiAccount"
+              name="username"
+              autocomplete="username"
+              placeholder="Enter your username"
+            />
+          </FormField>
+
+          <FormField
+            label="Phone Number"
+            help="Please enter your phone number"
+            class="text-slate-400"
+          >
+            <FormControl
+              v-model="personalDetails.phoneNumber"
+              :icon="mdiPhone"
+              name="phoneNumber"
+              autocomplete="tel"
+              placeholder="Enter your phone number"
+            />
+          </FormField>
+        </div>
+
+        <!-- Card Details -->
+        <div>
+          <h2 class="text-sm font-bold text-slate-400">CARD DETAILS</h2>
+          <FormField help="Please enter your card number" class="mt-4">
+            <FormControl
+              v-model="cardDetails.cardNumber"
+              :icon="mdiCard"
+              name="cardNumber"
+              autocomplete="cc-number"
+              placeholder="Enter your card number"
+            />
+          </FormField>
+
+          <div class="flex space-x-4">
+            <FormField help="Please enter the expiry month of your card">
+              <FormControl
+                v-model="cardDetails.expiryDate.month"
+                :icon="mdiCalendar"
+                name="expiryMonth"
+                placeholder="MM"
+              />
+            </FormField>
+
+            <FormField help="Please enter the expiry year of your card">
+              <FormControl
+                v-model="cardDetails.expiryDate.year"
+                :icon="mdiCalendar"
+                name="expiryYear"
+                placeholder="YYYY"
+              />
+            </FormField>
           </div>
-          <!-- Personal Details -->
-          <div class="mb-12">
-            <FormField label="Username" help="Please enter your username">
-              <FormControl
-                v-model="personalDetails.username"
-                :icon="mdiAccount"
-                name="username"
-                autocomplete="username"
-                placeholder="Enter your username"
-              />
-            </FormField>
-  
-            <FormField label="Phone Number" help="Please enter your phone number">
-              <FormControl
-                v-model="personalDetails.phoneNumber"
-                :icon="mdiPhone"
-                name="phoneNumber"
-                autocomplete="tel"
-                placeholder="Enter your phone number"
-              />
-            </FormField>
-          </div>
-  
-          <!-- Card Details -->
-          <div>
-            <h2 class="text-sm font-bold mb-2 text-slate-400">CARD DETAILS</h2>
-            <FormField label="Card Number" help="Please enter your card number">
-              <FormControl
-                v-model="cardDetails.cardNumber"
-                :icon="mdiCard"
-                name="cardNumber"
-                autocomplete="cc-number"
-                placeholder="Enter your card number"
-              />
-            </FormField>
-  
-            <div class="flex space-x-4">
-              <FormField label="Expiry Month" help="Please enter the expiry month of your card">
-                <FormControl
-                  v-model="cardDetails.expiryDate.month"
-                  :icon="mdiCalendar"
-                  name="expiryMonth"
-                  placeholder="MM"
-                />
-              </FormField>
-  
-              <FormField label="Expiry Year" help="Please enter the expiry year of your card">
-                <FormControl
-                  v-model="cardDetails.expiryDate.year"
-                  :icon="mdiCalendar"
-                  name="expiryYear"
-                  placeholder="YYYY"
-                />
-              </FormField>
-            </div>
-  
-            <FormField label="CVV" help="Please enter the CVV of your card">
-              <FormControl
-                v-model="cardDetails.cvv"
-                :icon="mdiKey"
-                type="password"
-                name="cvv"
-                autocomplete="cc-csc"
-                placeholder="Enter CVV"
-              />
-            </FormField>
-          </div>
-          <p v-if="form.verificationError != null" class="text-red-500 mt-5">{{ form.verificationError }}</p>
-          <template #footer>
-            <BaseButtons>
-              <BaseButton type="submit" color="info" label="Submit" />
-              <BaseButton to="/dashboard" color="info" outline label="Skip for now" />
-            </BaseButtons>
-          </template>
-        </CardBox>
-      </SectionFullScreen>
-    </LayoutGuest>
+
+          <FormField help="Please enter the CVV of your card">
+            <FormControl
+              v-model="cardDetails.cvv"
+              :icon="mdiKey"
+              type="password"
+              name="cvv"
+              autocomplete="cc-csc"
+              placeholder="Enter CVV"
+            />
+          </FormField>
+        </div>
+        <p v-if="form.verificationError != null" class="text-red-500 mt-5">
+          {{ form.verificationError }}
+        </p>
+        <template #footer>
+          <BaseButtons>
+            <BaseButton type="submit" color="info" label="Submit" />
+            <BaseButton
+              to="/dashboard"
+              color="info"
+              outline
+              label="Skip for now"
+            />
+          </BaseButtons>
+        </template>
+      </CardBox>
+    </SectionFullScreen>
+  </LayoutGuest>
 </template>
-  

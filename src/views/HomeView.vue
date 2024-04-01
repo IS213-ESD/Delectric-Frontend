@@ -78,7 +78,6 @@
         :drawer-id="1"
         :drawer-title="cardContent[0].name"
         :drawer-subtitle="cardContent[0].street"
-        :button-true="buttonText"
         button-false="Explore Booking Slots"
         @book-slot="handleBookSlot"
         :disabled="isFiltered"

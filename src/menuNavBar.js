@@ -10,6 +10,7 @@ import {
   mdiThemeLightDark,
   mdiGithub,
   mdiReact,
+  mdiFaceManProfile,
 } from '@mdi/js';
 
 export default [
@@ -42,17 +43,7 @@ export default [
         label: 'My Profile',
         to: '/profile',
       },
-      {
-        icon: mdiCogOutline,
-        label: 'Settings',
-      },
-      {
-        icon: mdiEmail,
-        label: 'Messages',
-      },
-      {
-        isDivider: true,
-      },
+
       {
         icon: mdiLogout,
         label: 'Log Out',
@@ -61,25 +52,13 @@ export default [
     ],
   },
   {
-    icon: mdiThemeLightDark,
-    label: 'Light/Dark',
-    isDesktopNoLabel: true,
-    isToggleLightDark: true,
-  },
-  {
     icon: mdiGithub,
     label: 'GitHub',
     isDesktopNoLabel: true,
-    href: '',
+    href: 'https://github.com/IS213-ESD',
     target: '_blank',
   },
-  {
-    icon: mdiReact,
-    label: 'React version',
-    isDesktopNoLabel: true,
-    href: '',
-    target: '_blank',
-  },
+
   {
     icon: mdiLogout,
     label: 'Log out',

@@ -11,17 +11,19 @@ import {
   mdiResponsive,
   mdiPalette,
   mdiReact,
+  mdiFaceManProfile,
+  mdiHome,
 } from '@mdi/js';
 
 export default [
   {
     to: '/dashboard',
-    icon: mdiMonitor,
-    label: 'Home',
+    icon: mdiHome,
+    label: 'Chargers',
   },
   {
     to: '/booking',
-    label: 'Bookings',
+    label: 'Your Bookings',
     icon: mdiTable,
   },
   // {
@@ -72,15 +74,8 @@ export default [
   //   ]
   // },
   {
-    href: 'https://github.com/justboil/admin-one-vue-tailwind',
-    label: 'GitHub',
-    icon: mdiGithub,
-    target: '_blank',
-  },
-  {
-    href: 'https://github.com/justboil/admin-one-react-tailwind',
-    label: 'React version',
-    icon: mdiReact,
-    target: '_blank',
+    to: '/profile',
+    label: 'Profile',
+    icon: mdiAccountCircle,
   },
 ];
