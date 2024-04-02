@@ -271,10 +271,6 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return Number(distance.toFixed(2));
 }
 
-// Example usage
-const distance = calculateDistance(52.52, 13.405, 48.8566, 2.3522);
-console.log('Distance:', distance.toFixed(2), 'km');
-
 const getAllStations = async () => {
   try {
     await chargersStore.fetchAllStations();
