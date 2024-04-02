@@ -23,7 +23,7 @@
               width="full"
               roundness="round"
               color="black"
-              @click="onBackClick"
+              @click="sendBooking"
             >
               Book Slot
             </CustomButton>
@@ -269,6 +269,14 @@ export default {
         '0'
       )}:00`;
     },
+    convertToDateOnly(dateString) {
+      const date = dateString;
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+
+      return `${year}-${month}-${day}`;
+    },
     getHoursBooked(dateString, duration) {
       const date = new Date(dateString);
       const hours = date.getUTCHours();
@@ -332,6 +340,8 @@ export default {
 
         let rawHour12 = this.convertTo24Hour(`${hour12}${suffix}`);
 
+        let dateOnly = this.convertToDateOnly(this.date);
+
         // Create an object for the current hour
         let listItem = {
           id: i, // Set id to i instead of i + 1
@@ -340,7 +350,7 @@ export default {
           }`, // Combine hour and suffix
           color: color, // Assign the determined color
           rawTiming: rawHour12,
-          date: this.date,
+          date: dateOnly,
           status: status,
         };
 
@@ -395,10 +405,53 @@ export default {
       this.hideButtonsView = false;
       this.hideCardBoxWidget = true;
     },
+    findLowestIdObject(array) {
+      if (!Array.isArray(array) || array.length === 0) {
+        return null; // Return null if the input is not an array or is empty
+      }
 
-    // changeTab() {
-    //   this.$router.push(this.pageName);
-    // },
+      // Find the object with the lowest id using the reduce method
+      const lowestIdObject = array.reduce((minObject, currentObject) => {
+        // If minObject is null or the currentObject's id is lower, set currentObject as minObject
+        if (minObject === null || currentObject.id < minObject.id) {
+          return currentObject;
+        } else {
+          return minObject;
+        }
+      }, null);
+
+      // Return a new object with the lowest id
+      return {
+        id: lowestIdObject.id,
+        timing: lowestIdObject.timing,
+        color: lowestIdObject.color,
+        rawTiming: lowestIdObject.rawTiming,
+        date: lowestIdObject.date,
+        // Add other properties as needed
+      };
+    },
+    sendBooking() {
+      const ogBookingList = this.createdBookingList;
+      console.log('Charger ID', this.cardId);
+      console.log(
+        'Booking Datetime',
+        `${ogBookingList[0].date}  ${
+          this.findLowestIdObject(ogBookingList).rawTiming
+        }`
+      );
+      console.log('Booking Duration', ogBookingList.length);
+      const data = {
+        // Your data to be sent to the store
+        charger_id: this.cardId,
+        user_id: 'NVqPLXexIFUr3loYRl1GJgkfAep2',
+        booking_datetime: `${ogBookingList[0].date} ${
+          this.findLowestIdObject(ogBookingList).rawTiming
+        }`,
+        booking_duration_hours: ogBookingList.length,
+      };
+      console.log(data);
+      this.bookingsStore.setData(data);
+    },
     bookSlot() {
       this.$emit('book-slot');
     },

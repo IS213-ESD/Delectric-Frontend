@@ -5,9 +5,35 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:5101/booking-complex';
 
 export const useBookingStore = defineStore('booking', () => {
+  // Define the state and actions
+  const state = () => ({
+    data: null,
+  });
+
+  const actions = {
+    setData(payload) {
+      console.log(payload);
+      this.data = payload;
+      this.createBooking(this.data);
+    },
+  };
+
   // Chargers in the area
   const bookingList = ref([]);
 
+  async function createBooking(data) {
+    try {
+      const response = await axios.post(
+        'http://localhost:5102/book-charger-complex/book-charger',
+        data
+      );
+      console.log('Response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error; // Rethrow the error to handle it elsewhere if needed
+    }
+  }
   async function fetchChargerBookings(chargerID) {
     try {
       const config = {
@@ -80,5 +106,8 @@ export const useBookingStore = defineStore('booking', () => {
     endBooking,
     cancelBooking,
     fetchChargerBookings,
+    createBooking,
+    ...state(),
+    ...actions,
   };
 });

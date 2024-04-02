@@ -168,7 +168,7 @@ async function endBooking(booking_id) {
                 <img
                   :src="
                     'http://localhost:5001/charging-station/images/' +
-                    booking.charger_info.charger_image
+                    booking.charger_info?.charger_image
                   "
                 />
               </figure>
@@ -201,7 +201,7 @@ async function endBooking(booking_id) {
                   max="100"
                 ></progress>
                 <div class="flex justify-between align-middle">
-                  <h2 class="card-title">
+                  <h2 class="card-title text-black">
                     {{ booking.charger_info.charger_name }}
                   </h2>
                 </div>
@@ -266,7 +266,7 @@ async function endBooking(booking_id) {
                 </div>
                 <progress class="progress h-3 w-100" max="100"></progress>
                 <div class="flex justify-between align-middle">
-                  <h2 class="card-title">
+                  <h2 class="card-title text-black">
                     {{ booking.charger_info.charger_name }}
                   </h2>
                 </div>
@@ -326,7 +326,7 @@ async function endBooking(booking_id) {
                   max="100"
                 ></progress>
                 <div class="flex justify-between align-middle">
-                  <h2 class="card-title">
+                  <h2 class="card-title text-black">
                     {{ booking.charger_info.charger_name }}
                   </h2>
                 </div>
