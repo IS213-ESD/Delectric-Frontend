@@ -2,19 +2,18 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import axios from 'axios';
 
-
 const BASE_URL = 'http://localhost:5101/booking-complex';
 
 export const useBookingStore = defineStore('booking', () => {
   // Chargers in the area
   const bookingList = ref([]);
 
-  async function fetchChargerBookings() {
+  async function fetchChargerBookings(chargerID) {
     try {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://localhost:5001/charging-station-booking/charger/1`,
+        url: `http://localhost:5001/charging-station-booking/charger/${chargerID}`,
       };
       const response = await axios(config);
       const userBookings = response?.data;

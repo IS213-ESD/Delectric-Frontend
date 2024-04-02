@@ -73,6 +73,7 @@
 
       <CustomDrawer
         :drawer-id="1"
+        :card-id="cardContent[0].id"
         :drawer-title="cardContent[0].name"
         :drawer-subtitle="cardContent[0].street"
         button-false="Explore Booking Slots"

@@ -77,6 +77,7 @@
     </GMapMap>
     <CustomDrawer
       :drawer-id="2"
+      :card-id="this.cardContent[0].id"
       :drawer-title="this.cardContent[0].name"
       :drawer-subtitle="this.cardContent[0].street"
       button-false="Explore Booking Slots"

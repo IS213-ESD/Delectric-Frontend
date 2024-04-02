@@ -1,12 +1,18 @@
 <template>
   <div class="drawer drawer_bottom z-50">
-    <input :id="drawerId" type="checkbox" class="drawer-toggle" />
+    <input
+      :id="drawerId"
+      type="checkbox"
+      class="drawer-toggle"
+      @change="onDrawerOpen"
+    />
 
     <div class="drawer-side">
       <label
         :for="drawerId"
         aria-label="close sidebar"
         class="drawer-overlay"
+        @click="closeDrawer"
       ></label>
       <div
         class="bottomDrawer bg-zinc-900 menu p-6 w-full text-base-content h-4/5 flex"
@@ -171,10 +177,10 @@ export default {
       type: String,
       default: '',
     },
-    // pageName: {
-    //   type: String,
-    //   default: '',
-    // },
+    cardId: {
+      type: Number,
+      default: 0,
+    },
     contentHere: {
       type: String,
       default: '',
@@ -222,6 +228,13 @@ export default {
     },
   },
   methods: {
+    onDrawerOpen() {
+      // Reset scroll position to the top
+      const drawerContent = document.querySelector('.hello');
+      if (drawerContent) {
+        drawerContent.scrollTo(0, 0);
+      }
+    },
     handleDate(modelData) {
       this.date = modelData;
       // do something else with the data
@@ -265,7 +278,7 @@ export default {
     },
     async handleFetchDayBookings(modelData) {
       try {
-        await this.bookingsStore.fetchChargerBookings();
+        await this.bookingsStore.fetchChargerBookings(this.cardId);
         const data = this.bookingsStore.bookingList;
         console.log('modelData', modelData);
         console.log('Successfully retrieve all bookings in that charger', data);
@@ -367,6 +380,11 @@ export default {
 
       console.log('listItems', this.listItems);
       console.log('createdBookingList', this.createdBookingList);
+    },
+
+    closeDrawer() {
+      console.log('close drawer');
+      this.handleDate([]);
     },
 
     onDrawerClose() {
