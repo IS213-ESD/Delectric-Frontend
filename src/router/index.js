@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import Style from '@/views/StyleView.vue';
 import HomeView from '@/views/HomeView.vue';
 import BookingsView from '@/views/Bookings.vue';
+import ActivityView from '@/views/Activity.vue';
 
 const routes = [
   {
@@ -29,6 +30,14 @@ const routes = [
     path: '/booking',
     name: 'booking',
     component: BookingsView,
+  },
+  {
+    meta: {
+      title: 'Activity',
+    },
+    path: '/activity',
+    name: 'activity',
+    component: ActivityView,
   },
   {
     meta: {
@@ -100,7 +109,7 @@ const routes = [
     },
     path: '/logout',
     name: 'logout',
-    component: () => import('@/views/logout.vue'),
+    component: () => import('@/views/Logout.vue'),
   },
   // {
   //   meta: {

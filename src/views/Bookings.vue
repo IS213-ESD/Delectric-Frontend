@@ -234,7 +234,7 @@ async function endBooking(booking_id) {
         <div class="stat-value text-primary">UPCOMING</div>
         <!-- <div class="stat-desc text-secondary">↗︎ 40 (2%)</div> -->
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 px-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 px-5">
         <p class="ml-2" v-if="sortedBookings.length === 0">
           No upcoming bookings.
         </p>
@@ -287,66 +287,6 @@ async function endBooking(booking_id) {
                     @click="cancelBooking(booking.booking_id)"
                   >
                     CANCEL BOOKING
-                  </button>
-                </div>
-              </div>
-            </div>
-          </template>
-        </template>
-      </div>
-      <div class="stat mt-10">
-        <div class="stat-title">MY BOOKINGS</div>
-        <div class="stat-value text-neutral-content">COMPLETED</div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 px-5">
-        <p class="ml-2" v-if="sortedBookings.length === 0">
-          No completed bookings.
-        </p>
-        <template v-else>
-          <template v-for="booking in sortedBookings" :key="booking.booking_id">
-            <div
-              v-if="booking.booking_status == 'COMPLETED'"
-              class="card bg-base-100"
-            >
-              <figure>
-                <img
-                  :src="
-                    'http://localhost:5001/charging-station/images/' +
-                    booking.charger_info.charger_image
-                  "
-                />
-              </figure>
-              <div class="card-body">
-                <div class="flex justify-between items-baseline">
-                  <span class="text-slate-400 text-xs">COMPLETED</span>
-                </div>
-                <progress
-                  class="progress h-3 w-100"
-                  value="100"
-                  max="100"
-                ></progress>
-                <div class="flex justify-between align-middle">
-                  <h2 class="card-title text-black">
-                    {{ booking.charger_info.charger_name }}
-                  </h2>
-                </div>
-                <span class="text-slate-400">{{
-                  booking.charger_info.charger_location
-                }}</span>
-                <span class="text-slate-400"
-                  >Booked From: {{ formatDate(booking.booking_datetime) }}-{{
-                    formatEndTime(
-                      booking.booking_datetime,
-                      booking.booking_duration_hours
-                    )
-                  }}</span
-                >
-                <div class="card-actions mt-5">
-                  <button
-                    class="btn btn-accent w-full"
-                    @click="cancelBooking(booking.booking_id)"
-                  >
-                    BOOK AGAIN
                   </button>
                 </div>
               </div>

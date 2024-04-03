@@ -101,7 +101,7 @@
             </div>
             <div class="w-1/3">
               <p class="rounded bg-teal-100 text-center font-bold text-xl">
-                $5
+                $10/hr
               </p>
               <p class="rounded bg-teal-100 text-center font-bold text-sky-900">
                 Parking Fee

@@ -26,6 +26,11 @@ export default [
     label: 'Your Bookings',
     icon: mdiTable,
   },
+  {
+    to: '/activity',
+    label: 'Past Activity',
+    icon: mdiTable,
+  },
   // {
   //   to: '/forms',
   //   label: 'Forms',
