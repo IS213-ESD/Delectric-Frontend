@@ -8,6 +8,7 @@ export const useBookingStore = defineStore('booking', () => {
   // Define the state and actions
   const state = () => ({
     data: null,
+    responseCreateBooking: null, // Initialize responseData property
   });
 
   const actions = {
@@ -18,8 +19,9 @@ export const useBookingStore = defineStore('booking', () => {
     },
   };
 
-  // Chargers in the area
+  // User Bookings in the area
   const bookingList = ref([]);
+  const chargerBookingList = ref([]);
 
   async function createBooking(data) {
     try {
@@ -28,6 +30,7 @@ export const useBookingStore = defineStore('booking', () => {
         data
       );
       console.log('Response:', response.data);
+      this.responseData = response.data; // Update responseData in store
       return response.data;
     } catch (error) {
       console.error('Error:', error);
@@ -43,7 +46,7 @@ export const useBookingStore = defineStore('booking', () => {
       };
       const response = await axios(config);
       const userBookings = response?.data;
-      bookingList.value = userBookings || [];
+      chargerBookingList.value = userBookings || [];
     } catch (error) {
       console.error('Error fetching user bookings:', error);
     }
@@ -102,6 +105,7 @@ export const useBookingStore = defineStore('booking', () => {
 
   return {
     bookingList,
+    chargerBookingList,
     fetchAllBookingsUser,
     endBooking,
     cancelBooking,

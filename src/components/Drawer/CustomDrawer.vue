@@ -24,8 +24,9 @@
               roundness="round"
               color="black"
               @click="sendBooking"
+              :disabled="isLoading"
             >
-              Book Slot
+              {{ isLoading ? 'Loading...' : 'Book Slot' }}
             </CustomButton>
           </div>
           <div v-if="!hideCardBoxWidget">
@@ -148,6 +149,8 @@ import { toggleDrawer } from '@/helpers/common';
 import CardBoxWidget from '@/components/CardBoxWidget.vue';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import { useBookingStore } from '@/stores/booking';
+import { useLoginStore } from '@/stores/login.js';
+import { useRouter } from 'vue-router';
 import Cutecar from '@/assets/Cutecar.png';
 
 import { _ } from 'numeral';
@@ -170,6 +173,8 @@ export default {
       bookings: [],
       createdBookings: [],
       Cutecar: Cutecar, // Assign the imported image to a variable
+      isLoading: false,
+      router: useRouter(),
     };
   },
   props: {
@@ -220,11 +225,20 @@ export default {
     bookingsStore() {
       return useBookingStore();
     },
+    loginStore() {
+      return useLoginStore();
+    },
     dayBookings() {
       return this.bookings;
     },
     createdBookingList() {
       return this.createdBookings;
+    },
+  },
+  watch: {
+    responseData(newValue) {
+      // Handle the response data received from the store
+      console.log('Response data received:', newValue);
     },
   },
   methods: {
@@ -287,7 +301,7 @@ export default {
     async handleFetchDayBookings(modelData) {
       try {
         await this.bookingsStore.fetchChargerBookings(this.cardId);
-        const data = this.bookingsStore.bookingList;
+        const data = this.bookingsStore.chargerBookingList;
         console.log('modelData', modelData);
         console.log('Successfully retrieve all bookings in that charger', data);
         // filter to the specific date chosen
@@ -443,7 +457,7 @@ export default {
       const data = {
         // Your data to be sent to the store
         charger_id: this.cardId,
-        user_id: 'NVqPLXexIFUr3loYRl1GJgkfAep2',
+        user_id: this.loginStore.userId,
         booking_datetime: `${ogBookingList[0].date} ${
           this.findLowestIdObject(ogBookingList).rawTiming
         }`,
@@ -451,6 +465,14 @@ export default {
       };
       console.log(data);
       this.bookingsStore.setData(data);
+      this.isLoading = true;
+
+      setTimeout(() => {
+        // Simulating completion of async operation
+        // Perform any other actions here if needed
+        this.isLoading = false;
+        this.router.push('/booking');
+      }, 2000); // Adjust the time based on your actual async operation
     },
     bookSlot() {
       this.$emit('book-slot');
