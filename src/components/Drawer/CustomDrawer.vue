@@ -133,7 +133,9 @@
                 :TimeSlot="item.timing"
                 :distance="null"
                 @click="onItemClick(item.id)"
-                class="mt-2 text-white"
+                :class="`mt-2 text-white ${
+                  item.status ? 'cursor-pointer' : 'cursor-default'
+                }`"
               />
             </div>
           </div>
@@ -353,7 +355,6 @@ export default {
 
         // Determine the color based on whether the id exists in dayBookings
         let color = dayBookings.includes(i) ? 'bg-slate-300' : 'bg-green';
-        console.log(color);
 
         let status = dayBookings.includes(i) ? false : true;
 
@@ -376,19 +377,18 @@ export default {
         // Push the object to the listItems array
         this.listItems.push(listItem);
       }
-      console.log('ihvbefivnfe', this.listItems);
-      console.log('a');
     },
 
     onItemClick(index) {
       console.log('index', index);
-      console.log('index', this.dayBookings);
+      const combinedArray = [];
+      for (const array of this.dayBookings) {
+        combinedArray.push(...array);
+      }
+      console.log('index', combinedArray);
 
       // Check if dayBookings is empty or if index is not in dayBookings
-      if (
-        this.dayBookings.length === 0 ||
-        !this.dayBookings[0].includes(index)
-      ) {
+      if (combinedArray.length === 0 || !combinedArray.includes(index)) {
         // Toggle the background color for the clicked item
         if (this.listItems[index].color === 'bg-blue') {
           // If color is blue, change it to green and add item to createdBookingList
