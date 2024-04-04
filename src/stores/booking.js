@@ -72,10 +72,10 @@ export const useBookingStore = defineStore('booking', () => {
     try {
       const config = {
         method: 'post',
-        url: `${BASE_URL}/endbooking`,
+        url: `${COMPLEX_URL}/complete-booking`,
         data: {
           booking_id: bookingId,
-          user_id: userId,
+          // user_id: userId,
         },
       };
       const response = await axios(config);
@@ -90,10 +90,10 @@ export const useBookingStore = defineStore('booking', () => {
     try {
       const config = {
         method: 'post',
-        url: `${BASE_URL}/cancelbooking`,
+        url: `${COMPLEX_URL}/cancel-booking`,
         data: {
           booking_id: bookingId,
-          user_id: userId,
+          // user_id: userId,
         },
       };
       const response = await axios(config);

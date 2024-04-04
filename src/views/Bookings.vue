@@ -7,6 +7,8 @@ const bookingStore = useBookingStore();
 const loginStore = useLoginStore();
 onMounted(() => {
   fetchAllBookingsUser();
+  const intervalId = setInterval(fetchAllBookingsUser, 5000);
+  return () => clearInterval(intervalId);
 });
 // COMPUTED
 // const bookingList = computed(() => bookingStore.bookingList)
