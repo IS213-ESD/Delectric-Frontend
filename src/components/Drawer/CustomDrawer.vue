@@ -321,7 +321,11 @@ export default {
               )
             );
             console.log('unavailable dayBookings', this.dayBookings);
-            this.populateCalendar(this.dayBookings[0]);
+            const combinedArray = [];
+            for (const array of this.dayBookings) {
+              combinedArray.push(...array);
+            }
+            this.populateCalendar(combinedArray);
           } else {
             this.populateCalendar(this.dayBookings);
           }
@@ -349,6 +353,7 @@ export default {
 
         // Determine the color based on whether the id exists in dayBookings
         let color = dayBookings.includes(i) ? 'bg-slate-300' : 'bg-green';
+        console.log(color);
 
         let status = dayBookings.includes(i) ? false : true;
 
@@ -371,6 +376,8 @@ export default {
         // Push the object to the listItems array
         this.listItems.push(listItem);
       }
+      console.log('ihvbefivnfe', this.listItems);
+      console.log('a');
     },
 
     onItemClick(index) {

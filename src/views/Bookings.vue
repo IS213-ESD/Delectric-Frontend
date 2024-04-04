@@ -10,26 +10,48 @@ onMounted(() => {
 });
 // COMPUTED
 // const bookingList = computed(() => bookingStore.bookingList)
-const sortedBookings = computed(() => {
-  const inProgressBookings = [];
-  const upcomingBookings = [];
+// const sortedBookings = computed(() => {
+//   const inProgressBookings = [];
+//   const upcomingBookings = [];
 
-  // Separate bookings into two arrays based on status
-  for (const booking of bookingStore.bookingList) {
-    if (
+//   // Separate bookings into two arrays based on status
+//   for (const booking of bookingStore.bookingList) {
+//     if (
+//       getBookingStatus(
+//         booking.booking_datetime,
+//         booking.booking_duration_hours
+//       ) == 'In Progress'
+//     ) {
+//       inProgressBookings.push(booking);
+//     } else {
+//       upcomingBookings.push(booking);
+//     }
+//   }
+
+//   // Combine arrays with in progress bookings first
+//   return [...inProgressBookings, ...upcomingBookings];
+// });
+
+const inProgressBookings = computed(() => {
+  return bookingStore.bookingList.filter((booking) => {
+    return (
       getBookingStatus(
         booking.booking_datetime,
         booking.booking_duration_hours
-      ) == 'In Progress'
-    ) {
-      inProgressBookings.push(booking);
-    } else {
-      upcomingBookings.push(booking);
-    }
-  }
+      ) === 'In Progress'
+    );
+  });
+});
 
-  // Combine arrays with in progress bookings first
-  return [...inProgressBookings, ...upcomingBookings];
+const upcomingBookings = computed(() => {
+  return bookingStore.bookingList.filter((booking) => {
+    return (
+      getBookingStatus(
+        booking.booking_datetime,
+        booking.booking_duration_hours
+      ) !== 'In Progress'
+    );
+  });
 });
 
 // Functions
@@ -108,9 +130,15 @@ function getBookingStatus(dateTimeString, duration) {
   const bookingTime = new Date(dateTimeString);
   const endTime = new Date(bookingTime.getTime() + duration * 60 * 60 * 1000);
 
+  console.log('hi', bookingTime);
+
   if (currentTime < bookingTime) {
+    console.log('upcming', bookingTime);
+
     return 'Upcoming';
   } else if (currentTime >= bookingTime && currentTime <= endTime) {
+    console.log('in progrewss', bookingTime);
+
     return 'In Progress';
   } else {
     return 'Completed';
@@ -150,11 +178,14 @@ async function endBooking(booking_id) {
         <!-- <div class="stat-desc text-secondary">↗︎ 40 (2%)</div> -->
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 px-5">
-        <p class="ml-2" v-if="sortedBookings.length === 0">
+        <p class="ml-2" v-if="inProgressBookings.length === 0">
           No ongoing bookings.
         </p>
         <template v-else>
-          <template v-for="booking in sortedBookings" :key="booking.booking_id">
+          <template
+            v-for="booking in inProgressBookings"
+            :key="booking.booking_id"
+          >
             <div
               v-if="
                 getBookingStatus(
@@ -235,11 +266,14 @@ async function endBooking(booking_id) {
         <!-- <div class="stat-desc text-secondary">↗︎ 40 (2%)</div> -->
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 px-5">
-        <p class="ml-2" v-if="sortedBookings.length === 0">
+        <p class="ml-2" v-if="upcomingBookings.length === 0">
           No upcoming bookings.
         </p>
         <template v-else>
-          <template v-for="booking in sortedBookings" :key="booking.booking_id">
+          <template
+            v-for="booking in upcomingBookings"
+            :key="booking.booking_id"
+          >
             <div
               v-if="
                 getBookingStatus(

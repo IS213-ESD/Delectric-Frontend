@@ -5,7 +5,8 @@
         message="Currently charging"
         submessage=""
         btnmessage="See Details"
-        class="mx-auto"
+        @click="goBookings"
+        class="mx-auto cursor-pointer"
       ></CurrentAlert>
 
       <SectionTitleLineWithButton
@@ -142,6 +143,10 @@ const receiveMarkerAdresss = (data) => {
 // Function to update store location
 const updateStoreLocation = async (latitude, longitude) => {
   await mainStore.updateStoreLocation(latitude, longitude);
+};
+
+const goBookings = () => {
+  router.push('/booking');
 };
 
 const centerValue = ref(mainStore.center); // Reactive variable to hold the center value

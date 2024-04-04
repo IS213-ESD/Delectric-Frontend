@@ -45,9 +45,9 @@ const routeView = () => {
 
 <template>
   <div role="alert" class="shadow-lg overflow-hidden p-0">
-    <div class="absolute">
+    <div class="absolute w-full">
       <div class="absolute ml-8">
-        <h1 class="mt-4 font-bold text-white text-2xl">{{ message }}</h1>
+        <h1 class="mt-8 font-bold text-white text-2xl">{{ message }}</h1>
         <button @click="routeView" class="btn btn-sm mt-2">
           {{ btnmessage }}
         </button>
