@@ -27,7 +27,7 @@ export const useBookingStore = defineStore('booking', () => {
   async function createBooking(data) {
     try {
       const response = await axios.post(
-        'http://localhost:5102/book-charger-complex/book-charger',
+        'http://localhost:8000/book-charger-complex/book-charger',
         data
       );
       console.log('Response:', response.data);
@@ -43,7 +43,7 @@ export const useBookingStore = defineStore('booking', () => {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://localhost:5001/charging-station-booking/charger/${chargerID}`,
+        url: `http://localhost:8000/charging-station-booking/charger/${chargerID}`,
       };
       const response = await axios(config);
       const userBookings = response?.data;
