@@ -161,6 +161,8 @@ async function endBooking(booking_id) {
                 <th class="text-white">Location</th>
                 <th class="text-white">Booking DateTime</th>
                 <th class="text-white">Status</th>
+                <th class="text-white">Booking Fee</th>
+                <th class="text-white">Charging Fee</th>
               </tr>
             </thead>
 
@@ -215,6 +217,14 @@ async function endBooking(booking_id) {
                         {{ booking.booking_status }}
                       </button>
                     </td>
+                    <td class="text-black">
+                      ${{
+                        booking.booking_status == 'CANCELLED'
+                          ? 0
+                          : booking.booking_fee
+                      }}
+                    </td>
+                    <td class="text-black">${{ booking.charging_fee }}</td>
                   </tr>
                 </template>
               </template>

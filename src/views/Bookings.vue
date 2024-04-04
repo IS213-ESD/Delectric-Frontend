@@ -252,7 +252,7 @@ async function endBooking(booking_id) {
                     class="btn btn-primary btn-outline w-full"
                     @click="endBooking(booking.booking_id)"
                   >
-                    END CHARGING
+                    COMPLETE CHARGING
                   </button>
                 </div>
               </div>

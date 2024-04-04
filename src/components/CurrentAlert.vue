@@ -20,17 +20,6 @@ defineProps({
 
 const videoPlayer = ref(null);
 
-// const playVideo = () => {
-//   if (videoPlayer.value) {
-//     videoPlayer.value.play();
-//   }
-// };
-
-const handleAutoplay = () => {
-  if (videoPlayer.value.paused) {
-    videoPlayer.value.play();
-  }
-};
 
 const restartVideo = () => {
   videoPlayer.value.currentTime = 0;

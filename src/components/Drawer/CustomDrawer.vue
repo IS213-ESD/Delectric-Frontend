@@ -358,7 +358,12 @@ export default {
 
         let status = dayBookings.includes(i) ? false : true;
 
-        let rawHour12 = this.convertTo24Hour(`${hour12}${suffix}`);
+        let rawHour12 = '';
+        if (i == 12) {
+          rawHour12 = '12:00:00';
+        } else {
+          rawHour12 = this.convertTo24Hour(`${hour12}${suffix}`);
+        }
 
         let dateOnly = this.convertToDateOnly(this.date);
 
@@ -430,7 +435,6 @@ export default {
       if (!Array.isArray(array) || array.length === 0) {
         return null; // Return null if the input is not an array or is empty
       }
-
       // Find the object with the lowest id using the reduce method
       const lowestIdObject = array.reduce((minObject, currentObject) => {
         // If minObject is null or the currentObject's id is lower, set currentObject as minObject
@@ -440,6 +444,8 @@ export default {
           return minObject;
         }
       }, null);
+
+      console.log(lowestIdObject.rawTiming);
 
       // Return a new object with the lowest id
       return {

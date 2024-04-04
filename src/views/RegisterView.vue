@@ -11,6 +11,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import BaseButtons from '@/components/BaseButtons.vue';
 import LayoutGuest from '@/layouts/LayoutGuest.vue';
 import FooterBar from '@/components/FooterBar.vue';
+import carvid from '@/assets/electra.mp4';
 
 import { ref } from 'vue';
 import { useLoginStore } from '@/stores/login';
@@ -27,6 +28,12 @@ const form = ref({
 const loginStore = useLoginStore();
 const signupStore = useSignupStore();
 const router = useRouter();
+const videoPlayer = ref(null);
+
+const restartVideo = () => {
+  videoPlayer.value.currentTime = 0;
+  videoPlayer.value.play();
+};
 
 function verifySignup(email, password, confirmPassword) {
   // Regular expression for email format validation
@@ -84,8 +91,14 @@ const submit = async () => {
 </script>
 <template>
   <LayoutGuest>
-    <SectionFullScreen v-slot="{ cardClass }" class="bg-slate-100 flex-col">
+    <SectionFullScreen
+      v-slot="{ cardClass }"
+      class="bg-slate-100 flex-col animated-background h-screen bg-gradient-to-r from-slate-100 via-teal-100 to-teal-400"
+    >
       <FooterBar></FooterBar>
+      <h3 class="font-bold text-2xl m-6 mt-2 text-slate-100">
+        Empowering EV drivers to connect, charge, and share power seamlessly.
+      </h3>
 
       <CardBox
         :class="cardClass"
@@ -93,6 +106,18 @@ const submit = async () => {
         is-form
         @submit.prevent="submit"
       >
+        <div class="mb-2">
+          <video
+            ref="videoPlayer"
+            class="w-full rounded-xl object-cover h-36"
+            autoplay
+            muted
+            @ended="restartVideo"
+          >
+            <source :src="carvid" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
         <FormField
           label="Email"
           help="Please enter your email"
@@ -142,12 +167,15 @@ const submit = async () => {
         </p>
         <template #footer>
           <BaseButtons>
-            <BaseButton type="submit" color="info" label="Register" />
+            <BaseButton
+              type="submit"
+              color="bg-teal-300 font-bold"
+              label="Register"
+            />
             <BaseButton
               to="/login"
-              color="info"
-              outline
-              label="Have an account"
+              color="bg-teal-100"
+              label="I have an account"
             />
           </BaseButtons>
         </template>
@@ -155,3 +183,24 @@ const submit = async () => {
     </SectionFullScreen>
   </LayoutGuest>
 </template>
+
+<style scoped>
+.animated-background {
+  background-size: 400%;
+
+  -webkit-animation: animation 3s ease infinite;
+  -moz-animation: animation 3s ease infinite;
+  animation: animation 3s ease infinite;
+}
+
+@keyframes animation {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+</style>

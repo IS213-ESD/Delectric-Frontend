@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5101/booking-complex';
+const COMPLEX_URL = 'http://localhost:5102/book-charger-complex';
 
 export const useBookingStore = defineStore('booking', () => {
   // Define the state and actions
