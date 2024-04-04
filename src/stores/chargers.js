@@ -11,7 +11,7 @@ export const useChargersStore = defineStore('chargers', () => {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://localhost:5001/charging-station/chargers`,
+        url: `http://localhost:8000/charging-station/chargers`,
       };
       const response = await axios(config);
       const nearbyStations = response?.data?.chargers;
@@ -27,7 +27,7 @@ export const useChargersStore = defineStore('chargers', () => {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://localhost:5001/charging-station/nearby-chargers`,
+        url: `http://localhost:8000/charging-station/nearby-chargers`,
         params: {
           lat: lat,
           lon: lon,
@@ -55,7 +55,7 @@ export const useChargersStore = defineStore('chargers', () => {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `http://localhost:5001/charging-station/nearby_stations_booking`,
+        url: `http://localhost:8000/charging-station/nearby_stations_booking`,
         params: {
           lat: lat,
           lon: lon,
